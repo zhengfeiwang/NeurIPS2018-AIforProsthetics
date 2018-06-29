@@ -1,0 +1,20 @@
+class Evaluator(object):
+    def __init__(self, args):
+        self.validate_episodes = args.validate_episodes
+
+    def __call__(self, env, policy, visualize=False):
+        result = []
+        for _ in range(self.validate_episodes):
+            observation = env.reset()
+            episode_rewards = 0.
+
+            done = False
+            while not done:
+                action = policy(observation)
+                observation, reward, done, _ = env.step(action)
+                if visualize:
+                    env.render()
+                episode_rewards += reward
+            result.append(episode_rewards)
+
+        return result
