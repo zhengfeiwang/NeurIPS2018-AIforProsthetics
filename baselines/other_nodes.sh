@@ -1,0 +1,1 @@
+ray start --redis-address=<redis-address> --num-cpus=10
