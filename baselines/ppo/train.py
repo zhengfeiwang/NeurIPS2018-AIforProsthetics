@@ -1,6 +1,6 @@
 import argparse
 import ray
-import ray.rllib.agents.ddpg as ddpg
+import ray.rllib.agents.ppo as ppo
 from ray.tune.registry import register_env
 
 MAX_STEPS_PER_ITERATION = 1000
@@ -13,7 +13,7 @@ def env_creator(env_config):
 
 
 def configure(args):
-    config = ddpg.DEFAULT_CONFIG.copy()
+    config = ppo.DEFAULT_CONFIG.copy()
 
     # general - hard code
     config["horizon"] = MAX_STEPS_PER_ITERATION // args.action_repeat
@@ -21,21 +21,6 @@ def configure(args):
     # general - according to arguments
     config["sample_batch_size"] = args.batch_size
     config["learning_starts"] = args.warmup
-
-    # DDPG specific - according to arguments
-    actor_hiddens = []
-    actor_layers = args.actor_hiddens.split('-')
-    for actor_layer in actor_layers:
-        actor_hiddens.append(int(actor_layer))
-    critic_hiddens = []
-    critic_layers = args.critic_hiddens.split('-')
-    for critic_layer in critic_layers:
-        critic_hiddens.append(int(critic_layer))
-    
-    config["actor_hiddens"] = actor_hiddens
-    config["actor_hidden_activation"] = args.actor_activation
-    config["critic_hiddens"] = critic_hiddens
-    config["critic_hidden_activation"] = args.critic_activation
     
     return config
 
@@ -45,15 +30,8 @@ if __name__ == "__main__":
     # Ray
     parser.add_argument("--redis-address", default=None, type=str, help="address of the Redis server")
     parser.add_argument("--num-cpus", default=2, type=int, help="number of local cpus")
-    # model
-    parser.add_argument("--actor-hiddens", default="64-64", type=str, help="Actor architecture")
-    parser.add_argument("--critic-hiddens", default="64-64", type=str, help="Critic architecture")
-    parser.add_argument("--actor-activation", default="relu", type=str, help="Actor activation function")
-    parser.add_argument("--critic-activation", default="relu", type=str, help="Critic activation function")
     # hyperparameters
     parser.add_argument("--batch-size", default=256, type=int, help="minibatch size")
-    parser.add_argument("--actor-learning-rate", default=1e-4, type=float, help="Actor learning rate")
-    parser.add_argument("--critic-learning-rate", default=1e-3, type=float, help="Critic learning rate")
     parser.add_argument("--action-repeat", default=4, type=int, help="repeat time for each action")
     parser.add_argument("--warmup", default=10000, type=int, help="number of random action before training")
     # checkpoint
@@ -70,7 +48,7 @@ if __name__ == "__main__":
     register_env("ProstheticsEnv", env_creator)
     config = configure(args)
 
-    agent = ddpg.DDPGAgent(env="ProstheticsEnv", config=config)
+    agent = ppo.PPOAgent(env="ProstheticsEnv", config=config)
 
     # agent training
     n_iteration = 1
