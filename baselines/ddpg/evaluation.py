@@ -17,11 +17,7 @@ def env_creator(env_config):
 def configure(args):
     config = ddpg.DEFAULT_CONFIG.copy()
 
-    # hard code
-    # Nothing now...
-
-    # according to arguments
-    """
+    # DDPG specific - according to arguments
     actor_hiddens = []
     actor_layers = args.actor_hiddens.split('-')
     for actor_layer in actor_layers:
@@ -35,7 +31,6 @@ def configure(args):
     config["actor_hidden_activation"] = args.actor_activation
     config["critic_hiddens"] = critic_hiddens
     config["critic_hidden_activation"] = args.critic_activation
-    """
     
     return config
 
@@ -43,15 +38,16 @@ def configure(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="RLlib version AI for Prosthetics Challenge")
     # model
-    parser.add_argument("--actor-hiddens", default="400-300", type=str, help="Actor architecture")
-    parser.add_argument("--critic-hiddens", default="400-300", type=str, help="Critic architecture")
+    parser.add_argument("--actor-hiddens", default="64-64", type=str, help="Actor architecture")
+    parser.add_argument("--critic-hiddens", default="64-64", type=str, help="Critic architecture")
     parser.add_argument("--actor-activation", default="relu", type=str, help="Actor activation function")
     parser.add_argument("--critic-activation", default="relu", type=str, help="Critic activation function")
     # hyperparameters
     parser.add_argument("--action-repeat", default=1, type=int, help="repeat time for each action")
     # checkpoint
     parser.add_argument("--checkpoint-dir", default="output", type=str, help="checkpoint output directory")
-    parser.add_argument("--checkpoint-id", default=None, type=str)
+    parser.add_argument("--checkpoint-id", default=None, type=str, help="id of checkpoint file")
+    parser.add_argument("--visualization", default=False, action="store_true", help="visualization for evaluation")
     
     args = parser.parse_args()
 
@@ -64,7 +60,7 @@ if __name__ == "__main__":
     checkpoint_path = os.path.join(args.checkpoint_dir, "checkpoint-" + str(args.checkpoint_id))
     agent.restore(checkpoint_path=checkpoint_path)
 
-    env = ProstheticsEnv(visualize=True)
+    env = ProstheticsEnv(visualize=args.visualization)
     observation = env.reset()
 
     episode_reward = 0.

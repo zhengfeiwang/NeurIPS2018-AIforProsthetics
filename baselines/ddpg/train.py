@@ -3,6 +3,8 @@ import ray
 import ray.rllib.agents.ddpg as ddpg
 from ray.tune.registry import register_env
 
+MAX_STEPS_PER_ITERATION = 1000
+
 
 def env_creator(env_config):
     from custom_env import CustomEnv
@@ -13,10 +15,10 @@ def env_creator(env_config):
 def configure(args):
     config = ddpg.DEFAULT_CONFIG.copy()
 
-    # hard code
-    # Nothing now...
+    # general - hard code
+    config["horizon"] = MAX_STEPS_PER_ITERATION // args.action_repeat
 
-    # according to arguments
+    # DDPG specific - according to arguments
     actor_hiddens = []
     actor_layers = args.actor_hiddens.split('-')
     for actor_layer in actor_layers:
@@ -39,10 +41,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="RLlib version AI for Prosthetics Challenge")
     # Ray
     parser.add_argument("--redis-address", default=None, type=str, help="address of the Redis server")
-    parser.add_argument("--num-cpus", default=24, type=int, help="number of local cpus")
+    parser.add_argument("--num-cpus", default=2, type=int, help="number of local cpus")
     # model
-    parser.add_argument("--actor-hiddens", default="400-300", type=str, help="Actor architecture")
-    parser.add_argument("--critic-hiddens", default="400-300", type=str, help="Critic architecture")
+    parser.add_argument("--actor-hiddens", default="64-64", type=str, help="Actor architecture")
+    parser.add_argument("--critic-hiddens", default="64-64", type=str, help="Critic architecture")
     parser.add_argument("--actor-activation", default="relu", type=str, help="Actor activation function")
     parser.add_argument("--critic-activation", default="relu", type=str, help="Critic activation function")
     # hyperparameters
@@ -53,7 +55,7 @@ if __name__ == "__main__":
     parser.add_argument("--warmup", default=10000, type=int, help="number of random action before training")
     # checkpoint
     parser.add_argument("--checkpoint-dir", default="output", type=str, help="checkpoint output directory")
-    parser.add_argument('--checkpoint-interval', default=10, type=int, help="iteration interval for checkpoint")
+    parser.add_argument("--checkpoint-interval", default=10, type=int, help="iteration interval for checkpoint")
     
     args = parser.parse_args()
 
