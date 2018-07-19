@@ -38,8 +38,8 @@ def configure(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="RLlib version AI for Prosthetics Challenge")
     # model
-    parser.add_argument("--actor-hiddens", default="64-64", type=str, help="Actor architecture")
-    parser.add_argument("--critic-hiddens", default="64-64", type=str, help="Critic architecture")
+    parser.add_argument("--actor-hiddens", default="400-300", type=str, help="Actor architecture")
+    parser.add_argument("--critic-hiddens", default="400-300", type=str, help="Critic architecture")
     parser.add_argument("--actor-activation", default="relu", type=str, help="Actor activation function")
     parser.add_argument("--critic-activation", default="relu", type=str, help="Critic activation function")
     # hyperparameters
@@ -77,3 +77,4 @@ if __name__ == "__main__":
                 break
     
     print('reward:', episode_reward)
+    env.close()

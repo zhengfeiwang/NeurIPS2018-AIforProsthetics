@@ -19,6 +19,7 @@ def configure(args):
     config["horizon"] = MAX_STEPS_PER_ITERATION // args.action_repeat
 
     # general - according to arguments
+    config["num_workers"] = args.num_workers
     config["sample_batch_size"] = args.batch_size
     config["learning_starts"] = args.warmup
 
@@ -44,10 +45,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="RLlib version AI for Prosthetics Challenge")
     # Ray
     parser.add_argument("--redis-address", default=None, type=str, help="address of the Redis server")
+    parser.add_argument("--num-workers", default=24, type=int, help="number of workers for parallelism")
     parser.add_argument("--num-cpus", default=2, type=int, help="number of local cpus")
     # model
-    parser.add_argument("--actor-hiddens", default="64-64", type=str, help="Actor architecture")
-    parser.add_argument("--critic-hiddens", default="64-64", type=str, help="Critic architecture")
+    parser.add_argument("--actor-hiddens", default="400-300", type=str, help="Actor architecture")
+    parser.add_argument("--critic-hiddens", default="400-300", type=str, help="Critic architecture")
     parser.add_argument("--actor-activation", default="relu", type=str, help="Actor activation function")
     parser.add_argument("--critic-activation", default="relu", type=str, help="Critic activation function")
     # hyperparameters
