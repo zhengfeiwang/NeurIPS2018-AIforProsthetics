@@ -1,1 +1,0 @@
-ray start --head --redis-port=60730 --num-cpus=4
