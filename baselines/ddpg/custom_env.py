@@ -2,7 +2,7 @@ from osim.env import ProstheticsEnv
 
 
 class CustomEnv(ProstheticsEnv):
-    def __init__(self, action_repeat, integrator_accuracy):
+    def __init__(self, action_repeat, integrator_accuracy=5e-5):
         self.env = ProstheticsEnv(visualize=False)
         self.env.integrator_accuracy = integrator_accuracy
         self.action_repeat = action_repeat
