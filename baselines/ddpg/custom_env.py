@@ -2,8 +2,9 @@ from osim.env import ProstheticsEnv
 
 
 class CustomEnv(ProstheticsEnv):
-    def __init__(self, action_repeat, visualize=False):
-        self.env = ProstheticsEnv(visualize=visualize)
+    def __init__(self, action_repeat, integrator_accuracy):
+        self.env = ProstheticsEnv(visualize=False)
+        self.env.integrator_accuracy = integrator_accuracy
         self.action_repeat = action_repeat
         self.observation_space = self.env.observation_space
         self.action_space = self.env.action_space

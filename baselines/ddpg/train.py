@@ -8,7 +8,7 @@ MAX_STEPS_PER_ITERATION = 1000
 
 def env_creator(env_config):
     from custom_env import CustomEnv
-    env = CustomEnv(action_repeat=args.action_repeat)
+    env = CustomEnv(action_repeat=args.action_repeat, integrator_accuracy=args.integrator_accuracy)
     return env
 
 
@@ -58,6 +58,8 @@ if __name__ == "__main__":
     parser.add_argument("--critic-learning-rate", default=1e-3, type=float, help="Critic learning rate")
     parser.add_argument("--action-repeat", default=4, type=int, help="repeat time for each action")
     parser.add_argument("--warmup", default=10000, type=int, help="number of random action before training")
+    # environment
+    parser.add_argument("--integrator-accuracy", default=5e-5, type=float, help="simulator integrator accuracy")
     # checkpoint
     parser.add_argument("--checkpoint-dir", default="output", type=str, help="checkpoint output directory")
     parser.add_argument("--checkpoint-interval", default=10, type=int, help="iteration interval for checkpoint")
@@ -78,7 +80,7 @@ if __name__ == "__main__":
     n_iteration = 1
     while (True):
         agent.train()
-        print('training step: #{}'.format(n_iteration))
+        print('training iteration: #{}'.format(n_iteration))
 
         n_iteration += 1
 
