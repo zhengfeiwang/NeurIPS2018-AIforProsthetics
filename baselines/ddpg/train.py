@@ -1,9 +1,13 @@
+import os
 import argparse
+import logging
 import ray
 import ray.rllib.agents.ddpg as ddpg
 from ray.tune.registry import register_env
 
 MAX_STEPS_PER_ITERATION = 1000
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 
 def env_creator(env_config):
@@ -45,11 +49,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="RLlib version AI for Prosthetics Challenge")
     # Ray
     parser.add_argument("--redis-address", default=None, type=str, help="address of the Redis server")
-    parser.add_argument("--num-workers", default=24, type=int, help="number of workers for parallelism")
-    parser.add_argument("--num-cpus", default=2, type=int, help="number of local cpus")
+    parser.add_argument("--num-workers", default=2, type=int, help="number of workers for parallelism")
+    parser.add_argument("--num-cpus", default=4, type=int, help="number of local cpus")
     # model
-    parser.add_argument("--actor-hiddens", default="400-300", type=str, help="Actor architecture")
-    parser.add_argument("--critic-hiddens", default="400-300", type=str, help="Critic architecture")
+    parser.add_argument("--actor-hiddens", default="64-64", type=str, help="Actor architecture")
+    parser.add_argument("--critic-hiddens", default="64-64", type=str, help="Critic architecture")
     parser.add_argument("--actor-activation", default="relu", type=str, help="Actor activation function")
     parser.add_argument("--critic-activation", default="relu", type=str, help="Critic activation function")
     # hyperparameters
@@ -59,10 +63,10 @@ if __name__ == "__main__":
     parser.add_argument("--action-repeat", default=4, type=int, help="repeat time for each action")
     parser.add_argument("--warmup", default=10000, type=int, help="number of random action before training")
     # environment
-    parser.add_argument("--integrator-accuracy", default=5e-5, type=float, help="simulator integrator accuracy")
+    parser.add_argument("--integrator-accuracy", default=1e-3, type=float, help="simulator integrator accuracy")
     # checkpoint
     parser.add_argument("--checkpoint-dir", default="output", type=str, help="checkpoint output directory")
-    parser.add_argument("--checkpoint-interval", default=10, type=int, help="iteration interval for checkpoint")
+    parser.add_argument("--checkpoint-interval", default=5, type=int, help="iteration interval for checkpoint")
     
     args = parser.parse_args()
 
@@ -76,14 +80,21 @@ if __name__ == "__main__":
 
     agent = ddpg.DDPGAgent(env="ProstheticsEnv", config=config)
 
+    # verify checkpoint directory
+    if not os.path.exists(args.checkpoint_dir):
+        os.mkdir(args.checkpoint_dir)
+
     # agent training
-    n_iteration = 1
-    while (True):
-        agent.train()
-        print('training iteration: #{}'.format(n_iteration))
+    while True:
+        train_result = agent.train()
+        
+        # useful information
+        logger.info('training iteration: #{}'.format(train_result.training_iteration))
+        logger.debug('total timesteps: {}'.format(train_result.timesteps_total))
+        logger.debug('episode this iteration: {}'.format(train_result.episodes_total))
+        logger.debug('episode reward: [mean] {}, [max] {}'.format(train_result.episode_reward_mean, train_result.episode_reward_max))
+        logger.debug('episode length: [mean] {}'.format(train_result.episode_len_mean))
 
-        n_iteration += 1
-
-        if n_iteration % args.checkpoint_interval == 0:
-            checkpoint = agent.save(args.checkpoint_dir)
-            print('[checkpoint] No.{}'.format(n_iteration))
+        if train_result.training_iteration % args.checkpoint_interval == 0:
+            save_result = agent.save(args.checkpoint_dir)
+            print('[checkpoint] iteration #{} at {}'.format(train_result.training_iteration, save_result))
