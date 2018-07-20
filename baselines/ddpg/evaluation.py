@@ -47,7 +47,7 @@ if __name__ == "__main__":
     # checkpoint
     parser.add_argument("--checkpoint-dir", default="output", type=str, help="checkpoint output directory")
     parser.add_argument("--checkpoint-id", default=None, type=str, help="id of checkpoint file")
-    parser.add_argument("--visualization", default=False, action="store_true", help="visualization for evaluation")
+    parser.add_argument("--visualization", default=True, action="store_true", help="visualization for evaluation")
     
     args = parser.parse_args()
 
