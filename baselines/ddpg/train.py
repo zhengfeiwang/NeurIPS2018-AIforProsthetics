@@ -12,23 +12,24 @@ logger = logging.getLogger(__name__)
 
 def env_creator(env_config):
     from custom_env import CustomEnv
-    env = CustomEnv(action_repeat=args.action_repeat, integrator_accuracy=args.integrator_accuracy)
+    env = CustomEnv(action_repeat=args.action_repeat, 
+                    integrator_accuracy=args.integrator_accuracy,
+                    reward_penalty=args.reward_penalty)
     return env
 
 
 def configure(args):
     config = ddpg.DEFAULT_CONFIG.copy()
 
-    # general - hard code
+    # common
     config["horizon"] = MAX_STEPS_PER_ITERATION // args.action_repeat
-    config["gpu"] = True
-
-    # general - according to arguments
     config["num_workers"] = args.num_workers
+
+    # DDPG specific
+    config["gpu"] = True
     config["train_batch_size"] = args.batch_size
     config["learning_starts"] = args.warmup
 
-    # DDPG specific - according to arguments
     actor_hiddens = []
     actor_layers = args.actor_hiddens.split('-')
     for actor_layer in actor_layers:
@@ -63,6 +64,7 @@ if __name__ == "__main__":
     parser.add_argument("--critic-learning-rate", default=1e-3, type=float, help="Critic learning rate")
     parser.add_argument("--action-repeat", default=4, type=int, help="repeat time for each action")
     parser.add_argument("--warmup", default=10000, type=int, help="number of random action before training")
+    parser.add_argument("--reward-penalty", default=True, action="store_true", help="add extra penalty on reward")
     # environment
     parser.add_argument("--integrator-accuracy", default=1e-3, type=float, help="simulator integrator accuracy")
     # checkpoint
@@ -95,6 +97,7 @@ if __name__ == "__main__":
         logger.debug('episode this iteration: {}'.format(train_result.episodes_total))
         logger.debug('episode reward: [mean] {}, [max] {}'.format(train_result.episode_reward_mean, train_result.episode_reward_max))
         logger.debug('episode length: [mean] {}'.format(train_result.episode_len_mean))
+        logger.debug('')
 
         if train_result.training_iteration % args.checkpoint_interval == 0:
             save_result = agent.save(args.checkpoint_dir)
