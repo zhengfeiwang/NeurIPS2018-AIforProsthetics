@@ -21,10 +21,11 @@ def configure(args):
 
     # general - hard code
     config["horizon"] = MAX_STEPS_PER_ITERATION // args.action_repeat
+    config["gpu"] = True
 
     # general - according to arguments
     config["num_workers"] = args.num_workers
-    config["sample_batch_size"] = args.batch_size
+    config["train_batch_size"] = args.batch_size
     config["learning_starts"] = args.warmup
 
     # DDPG specific - according to arguments
