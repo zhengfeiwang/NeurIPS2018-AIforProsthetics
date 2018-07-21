@@ -51,11 +51,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="RLlib version AI for Prosthetics Challenge")
     # Ray
     parser.add_argument("--redis-address", default=None, type=str, help="address of the Redis server")
-    parser.add_argument("--num-workers", default=2, type=int, help="number of workers for parallelism")
-    parser.add_argument("--num-cpus", default=4, type=int, help="number of local cpus")
+    parser.add_argument("--num-workers", default=24, type=int, help="number of workers for parallelism")
+    parser.add_argument("--num-cpus", default=24, type=int, help="number of local cpus")
     # model
-    parser.add_argument("--actor-hiddens", default="64-64", type=str, help="Actor architecture")
-    parser.add_argument("--critic-hiddens", default="64-64", type=str, help="Critic architecture")
+    parser.add_argument("--actor-hiddens", default="400-300", type=str, help="Actor architecture")
+    parser.add_argument("--critic-hiddens", default="400-300", type=str, help="Critic architecture")
     parser.add_argument("--actor-activation", default="relu", type=str, help="Actor activation function")
     parser.add_argument("--critic-activation", default="relu", type=str, help="Critic activation function")
     # hyperparameters
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     parser.add_argument("--integrator-accuracy", default=1e-3, type=float, help="simulator integrator accuracy")
     # checkpoint
     parser.add_argument("--checkpoint-dir", default="output", type=str, help="checkpoint output directory")
-    parser.add_argument("--checkpoint-interval", default=5, type=int, help="iteration interval for checkpoint")
+    parser.add_argument("--checkpoint-interval", default=10, type=int, help="iteration interval for checkpoint")
     
     args = parser.parse_args()
 
