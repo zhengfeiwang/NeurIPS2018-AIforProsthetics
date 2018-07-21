@@ -51,8 +51,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="RLlib version AI for Prosthetics Challenge")
     # Ray
     parser.add_argument("--redis-address", default=None, type=str, help="address of the Redis server")
-    parser.add_argument("--num-workers", default=24, type=int, help="number of workers for parallelism")
-    parser.add_argument("--num-cpus", default=24, type=int, help="number of local cpus")
+    parser.add_argument("--num-workers", default=1, type=int, help="number of workers for parallelism")
+    parser.add_argument("--num-cpus", default=1, type=int, help="number of local cpus")
     # model
     parser.add_argument("--actor-hiddens", default="400-300", type=str, help="Actor architecture")
     parser.add_argument("--critic-hiddens", default="400-300", type=str, help="Critic architecture")
