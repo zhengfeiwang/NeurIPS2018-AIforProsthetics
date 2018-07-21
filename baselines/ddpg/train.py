@@ -14,7 +14,7 @@ def env_creator(env_config):
     from custom_env import CustomEnv
     env = CustomEnv(action_repeat=args.action_repeat, 
                     integrator_accuracy=args.integrator_accuracy,
-                    reward_penalty=args.reward_penalty)
+                    reward_shaping=args.reward_shaping)
     return env
 
 
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     parser.add_argument("--critic-learning-rate", default=1e-3, type=float, help="Critic learning rate")
     parser.add_argument("--action-repeat", default=4, type=int, help="repeat time for each action")
     parser.add_argument("--warmup", default=10000, type=int, help="number of random action before training")
-    parser.add_argument("--reward-penalty", default=True, action="store_true", help="add extra penalty on reward")
+    parser.add_argument("--reward-shaping", default=True, action="store_true", help="add extra items to reward")
     # environment
     parser.add_argument("--integrator-accuracy", default=1e-3, type=float, help="simulator integrator accuracy")
     # checkpoint
@@ -91,11 +91,11 @@ if __name__ == "__main__":
     while True:
         train_result = agent.train()
         
-        # useful information
+        # log out useful information
         logger.info('training iteration: #{}'.format(train_result.training_iteration))
         logger.debug('total timesteps: {}'.format(train_result.timesteps_total))
         logger.debug('episode this iteration: {}'.format(train_result.episodes_total))
-        logger.debug('episode reward: [mean] {}, [max] {}'.format(train_result.episode_reward_mean, train_result.episode_reward_max))
+        logger.debug('episode reward: [mean] {}'.format(train_result.episode_reward_mean))
         logger.debug('episode length: [mean] {}'.format(train_result.episode_len_mean))
         logger.debug('')
 

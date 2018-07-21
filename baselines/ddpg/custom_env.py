@@ -4,25 +4,38 @@ from gym.spaces import Box
 
 
 class CustomEnv(ProstheticsEnv):
-    def __init__(self, action_repeat, integrator_accuracy=5e-5, reward_penalty=False):
+    def __init__(self, action_repeat, integrator_accuracy=5e-5, reward_shaping=False):
         self.env = ProstheticsEnv(visualize=False)
         self.env.integrator_accuracy = integrator_accuracy
         self.action_repeat = action_repeat
-        self.reward_penalty = reward_penalty
         self.observation_space = self.env.observation_space
         self.action_space = Box(0.0, 1.0, shape=(19,), dtype=np.float32)    # add action bound
         # self.action_space = self.env.action_space
+
+        # reward shaping
+        self.reward_shaping = reward_shaping
+        self.prev_pelvis_pos = 0.0
 
     def step(self, action):
         cumulative_reward = 0.0
         for _ in range(self.action_repeat):
             observation, reward, done, info = self.env.step(action, project=False)
-            if self.reward_penalty:
-                # offset between head and pelvis on x-axis and z-axis
-                head_pos = observation['body_pos']['head']
-                pelvis_pos = observation['body_pos']['pelvis']
-                reward += min(0.3, max(0, pelvis_pos[0] - head_pos[0] - 0.15)) * 0.05
-                reward += min(0.3, max(0, pelvis_pos[2] - head_pos[2] - 0.15)) * 0.05
+
+            if self.reward_shaping:
+                penalty = 0.0
+                prev_reward = 0.0
+                steps_reward = 1.0 # extend number of steps in an episode
+                # lean penalty - offset between head and pelvis on x-axis and z-axis
+                head_pos = observation["body_pos"]["head"]
+                pelvis_pos = observation["body_pos"]["pelvis"]
+                penalty += min(0.3, max(0, pelvis_pos[0] - head_pos[0] - 0.15)) * 0.05
+                penalty += min(0.3, max(0, pelvis_pos[2] - head_pos[2] - 0.15)) * 0.05
+                # reward in NIPS 2017 Learning to Run
+                prev_reward = observation["body_pos"]["pelvis"][0] - self.prev_pelvis_pos
+                self.prev_pelvis_pos = observation["body_pos"]["pelvis"][0]
+                # add penalty and previous reward to current reward
+                reward += penalty + prev_reward + steps_reward
+
             cumulative_reward += reward
             if done:
                 break
@@ -32,6 +45,7 @@ class CustomEnv(ProstheticsEnv):
 
     def reset(self, project = True):
         observation = self.env.reset()
+        self.prev_pelvis_pos = 0.0
         return observation
     
     # referenced from osim-rl
