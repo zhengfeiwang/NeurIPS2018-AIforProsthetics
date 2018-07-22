@@ -28,8 +28,8 @@ class CustomEnv(ProstheticsEnv):
                 # lean penalty - offset between head and pelvis on x-axis and z-axis
                 head_pos = observation["body_pos"]["head"]
                 pelvis_pos = observation["body_pos"]["pelvis"]
-                penalty += min(0.3, max(0, pelvis_pos[0] - head_pos[0] - 0.15)) * 0.05
-                penalty += min(0.3, max(0, pelvis_pos[2] - head_pos[2] - 0.15)) * 0.05
+                penalty += min(0.3, max(0, abs(pelvis_pos[0] - head_pos[0]) - 0.15)) * 0.05
+                penalty += min(0.3, max(0, abs(pelvis_pos[2] - head_pos[2]) - 0.15)) * 0.05
                 # reward in NIPS 2017 Learning to Run
                 prev_reward = observation["body_pos"]["pelvis"][0] - self.prev_pelvis_pos
                 self.prev_pelvis_pos = observation["body_pos"]["pelvis"][0]
