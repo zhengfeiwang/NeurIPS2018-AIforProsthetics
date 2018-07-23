@@ -1,11 +1,14 @@
-import argparse
 import os
+import argparse
+import logging
 from osim.env import ProstheticsEnv
 import ray
 import ray.rllib.agents.ddpg as ddpg
 from ray.tune.registry import register_env
 
 MAX_STEPS_PER_ITERATION = 1000
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 
 def env_creator(env_config):
@@ -64,7 +67,6 @@ if __name__ == "__main__":
     observation = env.reset()
 
     episode_reward = 0.0
-    episode_length = 0
     steps = 0
     done = False
 
@@ -72,11 +74,13 @@ if __name__ == "__main__":
         action = agent.compute_action(observation)
         for _ in range(args.action_repeat):
             observation, reward, done, _ = env.step(action)
+            logger.debug('step #{}: action={}, reward={}'.format(steps, action, reward))
             steps += 1
             episode_reward += reward
             if done or steps >= MAX_STEPS_PER_ITERATION:
                 break
     
-    print('reward:', episode_reward)
-    print('episode length:', episode_length * args.action_repeat)
+    logger.info('reward:{}'.format(episode_reward))
+    logger.debug('episode length:{}'.format(steps * args.action_repeat))
+    
     env.close()
