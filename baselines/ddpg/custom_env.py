@@ -1,10 +1,9 @@
 from osim.env import ProstheticsEnv
 import numpy as np
-import gym
 from gym.spaces import Box
 
 
-class CustomEnv():
+class CustomEnv(ProstheticsEnv):
     def __init__(self, action_repeat, integrator_accuracy=5e-5, reward_shaping=False):
         self.env = ProstheticsEnv(visualize=False)
         self.env.integrator_accuracy = integrator_accuracy
@@ -17,6 +16,13 @@ class CustomEnv():
         self.prev_pelvis_pos = 0.0
 
     def step(self, action):
+        # clip action into [0, 1]
+        for i in range(len(action)):
+            if action[i] < 0.0:
+                action[i] = 0.0
+            if action[i] > 1.0:
+                action[i] = 1.0
+
         cumulative_reward = 0.0
         for _ in range(self.action_repeat):
             observation, reward, done, info = self.env.step(action, project=False)
