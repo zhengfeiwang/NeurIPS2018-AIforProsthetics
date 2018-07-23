@@ -93,14 +93,20 @@ if __name__ == "__main__":
         
         # log out useful information
         logger.info('training iteration: #{}'.format(train_result.training_iteration))
-        logger.debug('total timesteps: {}'.format(train_result.timesteps_total))
-        logger.debug('episode this iteration: {}'.format(train_result.episodes_total))
-        logger.debug('episode reward: [mean] {}, [max] {}, [min] {}'.format(
-            train_result.episode_reward_mean, train_result.episode_reward_max, train_result.episode_reward_min
-        ))
-        logger.debug('episode length: [mean] {}'.format(train_result.episode_len_mean))
-        logger.debug('episode time: {}'.format(train_result.time_this_iter_s))
-        logger.debug('')
+        logger.info('time this iteration: {}'.format(train_result.time_this_iter_s))
+        logger.debug('  sample time: {}'.format(train_result.info["sample_time_ms"]))
+        logger.debug('  replay time: {}'.format(train_result.info["replay_time_ms"]))
+        logger.debug('  gradient time: {}'.format(train_result.info["grad_time_ms"]))
+        logger.debug('  update time: {}'.format(train_result.info["update_time_ms"]))
+        logger.debug('step number this iteration: {}'.format(train_result.timesteps_this_iter))
+        logger.debug('total steps: {}'.format(train_result.timesteps_total))
+        logger.debug('episode number this iteration: {}'.format(train_result.episodes_total))
+        logger.debug('episode mean length: {}'.format(train_result.episode_len_mean))
+        logger.debug('episode reward:')
+        logger.debug('  [mean] {}'.format(train_result.episode_reward_mean))
+        logger.debug('  [max] {}'.format(train_result.episode_reward_max))
+        logger.debug('  [min] {}'.format(train_result.episode_reward_min))
+        logger.debug('------------------------------------------------------------')
 
         if train_result.training_iteration % args.checkpoint_interval == 0:
             save_result = agent.save(args.checkpoint_dir)
