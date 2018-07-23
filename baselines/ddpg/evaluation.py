@@ -63,7 +63,8 @@ if __name__ == "__main__":
     env = ProstheticsEnv(visualize=args.visualization)
     observation = env.reset()
 
-    episode_reward = 0.
+    episode_reward = 0.0
+    episode_length = 0
     steps = 0
     done = False
 
@@ -77,4 +78,5 @@ if __name__ == "__main__":
                 break
     
     print('reward:', episode_reward)
+    print('episode length:', episode_length * args.action_repeat)
     env.close()

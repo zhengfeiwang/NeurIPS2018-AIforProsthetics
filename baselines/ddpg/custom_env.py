@@ -34,7 +34,7 @@ class CustomEnv(ProstheticsEnv):
                 prev_reward = observation["body_pos"]["pelvis"][0] - self.prev_pelvis_pos
                 self.prev_pelvis_pos = observation["body_pos"]["pelvis"][0]
                 # add penalty and previous reward to current reward
-                reward += penalty + prev_reward + steps_reward
+                reward = reward * 0.5 + penalty + prev_reward + steps_reward * 0.05
 
             cumulative_reward += reward
             if done:
