@@ -1,16 +1,16 @@
 from osim.env import ProstheticsEnv
 import numpy as np
+import gym
 from gym.spaces import Box
 
 
-class CustomEnv(ProstheticsEnv):
+class CustomEnv():
     def __init__(self, action_repeat, integrator_accuracy=5e-5, reward_shaping=False):
         self.env = ProstheticsEnv(visualize=False)
         self.env.integrator_accuracy = integrator_accuracy
         self.action_repeat = action_repeat
         self.observation_space = self.env.observation_space
-        self.action_space = Box(0.0, 1.0, shape=(19,), dtype=np.float32)    # add action bound
-        # self.action_space = self.env.action_space
+        self.action_space = self.env.action_space
 
         # reward shaping
         self.reward_shaping = reward_shaping
