@@ -64,7 +64,7 @@ if __name__ == "__main__":
     parser.add_argument("--critic-learning-rate", default=1e-3, type=float, help="Critic learning rate")
     parser.add_argument("--action-repeat", default=4, type=int, help="repeat time for each action")
     parser.add_argument("--warmup", default=10000, type=int, help="number of random action before training")
-    parser.add_argument("--reward-shaping", default=True, action="store_true", help="add extra items to reward")
+    parser.add_argument("--reward-shaping", default=False, action="store_true", help="add extra items to reward")
     # environment
     parser.add_argument("--integrator-accuracy", default=1e-3, type=float, help="simulator integrator accuracy")
     # checkpoint
@@ -95,8 +95,11 @@ if __name__ == "__main__":
         logger.info('training iteration: #{}'.format(train_result.training_iteration))
         logger.debug('total timesteps: {}'.format(train_result.timesteps_total))
         logger.debug('episode this iteration: {}'.format(train_result.episodes_total))
-        logger.debug('episode reward: [mean] {}'.format(train_result.episode_reward_mean))
+        logger.debug('episode reward: [mean] {}, [max] {}, [min] {}'.format(
+            train_result.episode_reward_mean, train_result.episode_reward_max, train_result.episode_reward_min
+        ))
         logger.debug('episode length: [mean] {}'.format(train_result.episode_len_mean))
+        logger.debug('episode time: {}'.format(train_result.time_this_iter_s))
         logger.debug('')
 
         if train_result.training_iteration % args.checkpoint_interval == 0:

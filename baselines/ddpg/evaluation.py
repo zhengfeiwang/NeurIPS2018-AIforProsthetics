@@ -72,15 +72,22 @@ if __name__ == "__main__":
 
     while steps < MAX_STEPS_PER_ITERATION and not done:
         action = agent.compute_action(observation)
+        # action clip
+        for i in range(len(action)):
+            if (action[i] < 0.0):
+                action[i] = 0.0
+            if (action[i] > 1.0):
+                action[i] = 1.0
         for _ in range(args.action_repeat):
             observation, reward, done, _ = env.step(action)
-            logger.debug('step #{}: action={}, reward={}'.format(steps, action, reward))
+            logger.debug('step #{}: action={}'.format(steps, action))
+            logger.debug('  reward={}'.format(reward))
             steps += 1
             episode_reward += reward
             if done or steps >= MAX_STEPS_PER_ITERATION:
                 break
     
-    logger.info('reward:{}'.format(episode_reward))
-    logger.debug('episode length:{}'.format(steps * args.action_repeat))
+    logger.info('score: {}'.format(episode_reward))
+    logger.debug('episode length: {}'.format(steps * args.action_repeat))
     
     env.close()
