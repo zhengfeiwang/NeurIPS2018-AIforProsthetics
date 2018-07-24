@@ -35,8 +35,8 @@ class CustomEnv(ProstheticsEnv):
                 pelvis_pos = observation["body_pos"]["pelvis"]
                 penalty += min(0.3, max(0, pelvis_pos[0] - head_pos[0] - 0.15)) * 0.05
                 # reward in NIPS 2017 Learning to Run
-                prev_reward = observation["body_pos"]["pelvis"][0] - self.prev_pelvis_pos
-                self.prev_pelvis_pos = observation["body_pos"]["pelvis"][0]
+                prev_reward = observation["joint_pos"]["ground_pelvis"][1] - self.prev_pelvis_pos
+                self.prev_pelvis_pos = observation["joint_pos"]["ground_pelvis"][1]
                 # add penalty and previous reward to current reward
                 # reward = reward + penalty + prev_reward + steps_reward
                 
