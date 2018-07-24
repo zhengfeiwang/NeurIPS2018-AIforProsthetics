@@ -16,13 +16,6 @@ class CustomEnv(ProstheticsEnv):
         self.prev_pelvis_pos = 0.0
 
     def step(self, action):
-        # clip action into [0, 1]
-        for i in range(len(action)):
-            if action[i] < 0.0:
-                action[i] = 0.0
-            if action[i] > 1.0:
-                action[i] = 1.0
-
         cumulative_reward = 0.0
         for _ in range(self.action_repeat):
             observation, reward, done, info = self.env.step(action, project=False)
@@ -30,18 +23,16 @@ class CustomEnv(ProstheticsEnv):
             if self.reward_shaping:
                 penalty = 0.0
                 prev_reward = 0.0
+                steps_reward = 1.0
                 # lean penalty - offset between head and pelvis on x-axis
                 head_pos = observation["body_pos"]["head"]
                 pelvis_pos = observation["body_pos"]["pelvis"]
                 penalty += min(0.3, max(0, pelvis_pos[0] - head_pos[0] - 0.15)) * 0.05
                 # reward in NIPS 2017 Learning to Run
-                prev_reward = observation["joint_pos"]["ground_pelvis"][1] - self.prev_pelvis_pos
-                self.prev_pelvis_pos = observation["joint_pos"]["ground_pelvis"][1]
+                prev_reward = pelvis_pos[0] - self.prev_pelvis_pos
+                self.prev_pelvis_pos = pelvis_pos[0]
                 # add penalty and previous reward to current reward
-                # reward = reward + penalty + prev_reward + steps_reward
-                
-                # let the agent run!
-                reward = prev_reward + penalty
+                reward = reward + penalty + prev_reward + steps_reward
 
             cumulative_reward += reward
             if done:
