@@ -41,7 +41,7 @@ class CustomEnv(ProstheticsEnv):
                 # reward = reward + penalty + prev_reward + steps_reward
                 
                 # let the agent run!
-                reward = prev_reward * 10
+                reward = prev_reward + penalty
 
             cumulative_reward += reward
             if done:
