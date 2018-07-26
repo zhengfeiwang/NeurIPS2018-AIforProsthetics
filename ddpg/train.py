@@ -4,6 +4,7 @@ import logging
 import ray
 import ray.rllib.agents.ddpg as ddpg
 from ray.tune.registry import register_env
+from evaluator import Evaluator
 
 MAX_STEPS_PER_ITERATION = 1000
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(message)s')
@@ -70,9 +71,10 @@ if __name__ == "__main__":
     # environment
     parser.add_argument("--integrator-accuracy", default=1e-3, type=float, help="simulator integrator accuracy")
     parser.add_argument("--gpu", default=False, action="store_true", help="use GPU for optimization")
-    # checkpoint
+    # checkpoint and validation
     parser.add_argument("--checkpoint-dir", default="output", type=str, help="checkpoint output directory")
-    parser.add_argument("--checkpoint-interval", default=100, type=int, help="iteration interval for checkpoint")
+    parser.add_argument("--checkpoint-interval", default=5, type=int, help="iteration interval for checkpoint")
+    parser.add_argument("--validation-interval", default=5, type=int, help="iteration interval for validation")
     
     args = parser.parse_args()
 
@@ -89,6 +91,9 @@ if __name__ == "__main__":
     # verify checkpoint directory
     if not os.path.exists(args.checkpoint_dir):
         os.mkdir(args.checkpoint_dir)
+    
+    # initialize evaluator
+    evaluator = Evaluator(action_repeat=args.action_repeat)
 
     # agent training
     while True:
@@ -110,6 +115,14 @@ if __name__ == "__main__":
         logger.debug('  [min] {}'.format(train_result.episode_reward_min))
         logger.debug('--------------------------------------------------')
 
+        # validation
+        if train_result.training_iteration % args.validation_interval == 0:
+            validation_reward, validation_steps = evaluator(agent)
+            logger.info(' > validation at iteration: #{}: reward = {}, episode length = {}'.format(
+                train_result.training_iteration, validation_reward, validation_steps
+            ))
+
+        # checkpoint
         if train_result.training_iteration % args.checkpoint_interval == 0:
             save_result = agent.save(args.checkpoint_dir)
             logger.info('[checkpoint] iteration #{} at {}'.format(train_result.training_iteration, save_result))

@@ -2,8 +2,6 @@ from osim.env import ProstheticsEnv
 import numpy as np
 from gym.spaces import Box
 
-BODY_PARTS = ['femur_r', 'pros_tibia_r', 'pros_foot_r', 'femur_l', 'tibia_l', 'talus_l', 'calcn_l', 'toes_l', 'torso', 'head']
-JOINTS = ['ground_pelvis', 'hip_r', 'knee_r', 'ankle_r', 'hip_l', 'knee_l', 'ankle_l', 'back']
 CUSTOM_OBSERVATION_SPACE = 104
 
 
@@ -60,6 +58,9 @@ class CustomEnv(ProstheticsEnv):
     def custom_observation(self, observation):
         # custom observation space 33 + 33 + 17 + 17 + 4 = 104D
         res = []
+
+        BODY_PARTS = ['femur_r', 'pros_tibia_r', 'pros_foot_r', 'femur_l', 'tibia_l', 'talus_l', 'calcn_l', 'toes_l', 'torso', 'head']
+        JOINTS = ['ground_pelvis', 'hip_r', 'knee_r', 'ankle_r', 'hip_l', 'knee_l', 'ankle_l', 'back']
         
         # body parts positions relative to pelvis - 3 + 3 * 10D
         # pelvis relative position
