@@ -66,7 +66,7 @@ if __name__ == "__main__":
     parser.add_argument("--critic-learning-rate", default=1e-3, type=float, help="Critic learning rate")
     parser.add_argument("--action-repeat", default=4, type=int, help="repeat time for each action")
     parser.add_argument("--warmup", default=10000, type=int, help="number of random action before training")
-    parser.add_argument("--reward-type", default="original", type=str, help="reward type")
+    parser.add_argument("--reward-type", default="2018", type=str, help="reward type")
     # environment
     parser.add_argument("--integrator-accuracy", default=1e-3, type=float, help="simulator integrator accuracy")
     parser.add_argument("--gpu", default=False, action="store_true", help="use GPU for optimization")

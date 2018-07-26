@@ -30,18 +30,20 @@ class CustomEnv(ProstheticsEnv):
         for _ in range(self.action_repeat):
             observation, reward, done, info = self.env.step(action, project=False)
 
-            if self.reward_type is "original":
+            if self.reward_type == "2018":
                 reward = reward
-            elif self.reward_type is "2017":
+            elif self.reward_type == "2017":
                 reward = observation["body_pos"]["pelvis"][0] - self.prev_pelvis_pos
                 self.prev_pelvis_pos = observation["body_pos"]["pelvis"][0]
-            elif self.reward_type is "2017+penalty":
+            elif self.reward_type == "shaped":
                 lean = min(0.3, max(0, observation["body_pos"]["pelvis"][0] - observation["body_pos"]["head"][0] - 0.15)) * 0.05
-                joint = sum([max(0, knee - 0.1) for knee in [observation["joint_pos"]["knee_l"], observation["joint_pos"]["knee_r"]]]) * 0.03
+                joint = sum([max(0, knee - 0.1) for knee in [observation["joint_pos"]["knee_l"][0], observation["joint_pos"]["knee_r"][0]]]) * 0.03
                 penalty = lean + joint
                 reward = observation["body_pos"]["pelvis"][0] - self.prev_pelvis_pos
                 self.prev_pelvis_pos = observation["body_pos"]["pelvis"][0]
                 reward += penalty
+            else:
+                assert False, 'unknown reward type...'
 
             cumulative_reward += reward
             if done:
