@@ -8,7 +8,7 @@ CUSTOM_OBSERVATION_SPACE = 104
 
 
 class CustomEnv(ProstheticsEnv):
-    def __init__(self, action_repeat, integrator_accuracy=5e-5, reward_type="original"):
+    def __init__(self, action_repeat, integrator_accuracy=5e-5, reward_type="2018"):
         self.env = ProstheticsEnv(visualize=False)
         self.env.integrator_accuracy = integrator_accuracy
         self.action_repeat = action_repeat
