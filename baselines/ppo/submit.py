@@ -5,10 +5,10 @@ from osim.env import ProstheticsEnv
 
 import ray
 from ray.tune.registry import register_env
-import ray.rllib.agents.ddpg as ddpg
+import ray.rllib.agents.ppo as ppo
 
 ACTION_REPEAT = 4
-CHECKPOINT_PATH = "<checkpoint-path>"
+CHECKPOINT_PATH = "./output/checkpoint-18"
 
 
 def env_creator(env_config):
@@ -64,8 +64,8 @@ nb_states = 158 #env.observation_space.shape[0]
 nb_actions = 19 #env.action_space.shape[0]
 
 register_env("ProstheticsEnv", env_creator)
-config = ddpg.DEFAULT_CONFIG.copy()
-agent = ddpg.DDPGAgent(env="ProstheticsEnv", config=config)
+config = ppo.DEFAULT_CONFIG.copy()
+agent = ppo.PPOAgent(env="ProstheticsEnv", config=config)
 agent.restore(checkpoint_path=CHECKPOINT_PATH)
 
 # Settings
