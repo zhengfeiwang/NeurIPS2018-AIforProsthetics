@@ -1,9 +1,11 @@
 import os
+import time
 import argparse
 import logging
 import ray
 import ray.rllib.agents.ddpg as ddpg
 from ray.tune.registry import register_env
+from tensorboardX import SummaryWriter
 from evaluator import Evaluator
 
 MAX_STEPS_PER_ITERATION = 1000
@@ -95,6 +97,11 @@ if __name__ == "__main__":
     # initialize evaluator
     evaluator = Evaluator(action_repeat=args.action_repeat)
 
+    # tensorboard for validation reward
+    timestamp = time.time()
+    timestruct = time.localtime(timestamp)
+    writer = SummaryWriter(os.path.join(args.checkpoint_dir, time.strftime('%Y-%m-%d_%H-%M-%S', timestruct)))
+
     # agent training
     while True:
         train_result = agent.train()
@@ -115,12 +122,20 @@ if __name__ == "__main__":
         logger.debug('  [min] {}'.format(train_result.episode_reward_min))
         logger.debug('--------------------------------------------------')
 
+        # record train information in private tensorboard
+        writer.add_scalar('train/mean_reward', train_result.episode_reward_mean, train_result.training_iteration)
+        writer.add_scalar('train/mean_steps', train_result.episode_len_mean, train_result.training_iteration)
+        writer.add_scalar('train/time', train_result.time_this_iter_s, train_result.training_iteration)
+
         # validation
         if train_result.training_iteration % args.validation_interval == 0:
             validation_reward, validation_steps = evaluator(agent)
             logger.info(' > validation at iteration: #{}: reward = {}, episode length = {}'.format(
                 train_result.training_iteration, validation_reward, validation_steps
             ))
+            # record validation score/steps in private tensorboard
+            writer.add_scalar('validation/reward', validation_reward, train_result.training_iteration)
+            writer.add_scalar('validation/steps', validation_steps, train_result.training_iteration)
 
         # checkpoint
         if train_result.training_iteration % args.checkpoint_interval == 0:

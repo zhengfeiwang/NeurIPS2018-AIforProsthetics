@@ -6,6 +6,7 @@ from osim.env import ProstheticsEnv
 import ray
 import ray.rllib.agents.ddpg as ddpg
 from ray.tune.registry import register_env
+from evaluator import Evaluator
 
 MAX_STEPS_PER_ITERATION = 1000
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(message)s')
@@ -95,7 +96,7 @@ if __name__ == "__main__":
     # checkpoint
     parser.add_argument("--checkpoint-dir", default="output", type=str, help="checkpoint output directory")
     parser.add_argument("--checkpoint-id", default=None, type=str, help="id of checkpoint file")
-    parser.add_argument("--no-visualization", default=False, action="store_true", help="no visualization for evaluation")
+    parser.add_argument("--no-render", default=False, action="store_true", help="no visualization for evaluation")
     
     args = parser.parse_args()
 
@@ -104,35 +105,14 @@ if __name__ == "__main__":
     register_env("ProstheticsEnv", env_creator)
     config = configure(args)
 
+    evaluator = Evaluator(args.action_repeat, render=True if args.no_render is False else False)
+
     agent = ddpg.DDPGAgent(env="ProstheticsEnv", config=config)
     checkpoint_path = os.path.join(args.checkpoint_dir, "checkpoint-" + str(args.checkpoint_id))
     agent.restore(checkpoint_path=checkpoint_path)
 
-    env = ProstheticsEnv(visualize=True if args.no_visualization is False else False)
-    observation = custom_observation(env.reset(project=False))
+    evaluation_reward, evaluation_steps = evaluator(agent)
+    logger.info('score: {}'.format(evaluation_reward))
+    logger.info('steps: {}'.format(evaluation_steps))
 
-    episode_reward = 0.0
-    steps = 0
-    done = False
-
-    while steps < MAX_STEPS_PER_ITERATION and not done:
-        action = agent.compute_action(observation)
-        # action clip
-        action = np.clip(action, 0.0, 1.0)
-
-        for _ in range(args.action_repeat):
-            observation, reward, done, _ = env.step(action, project=False)
-            logger.debug('step #{}: action={}'.format(steps, action))
-            logger.debug('  reward={}'.format(reward))
-            steps += 1
-            episode_reward += reward
-            if done or steps >= MAX_STEPS_PER_ITERATION:
-                break
-        
-        # transform dictionary to 1D vector
-        observation = custom_observation(observation)
-    
-    logger.info('score: {}'.format(episode_reward))
-    logger.debug('episode length: {}'.format(steps * args.action_repeat))
-    
-    env.close()
+    evaluator.close()

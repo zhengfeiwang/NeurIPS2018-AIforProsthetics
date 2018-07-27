@@ -3,8 +3,8 @@ from osim.env import ProstheticsEnv
 
 
 class Evaluator(object):
-    def __init__(self, action_repeat):
-        self.env = ProstheticsEnv(visualize=False)
+    def __init__(self, action_repeat, render=False):
+        self.env = ProstheticsEnv(visualize=render)
         self.action_repeat = action_repeat
         self.episode_length_max = 1000 // self.action_repeat
 
@@ -78,3 +78,6 @@ class Evaluator(object):
             res += [observation["misc"]["mass_center_vel"][axis] - pelvis_vel[axis]]
             
         return res
+    
+    def close(self):
+        self.env.close()
