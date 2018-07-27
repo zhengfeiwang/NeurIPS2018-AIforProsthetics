@@ -40,6 +40,7 @@ class CustomEnv(ProstheticsEnv):
                 reward = observation["body_pos"]["pelvis"][0] - self.prev_pelvis_pos
                 self.prev_pelvis_pos = observation["body_pos"]["pelvis"][0]
                 reward += penalty
+                reward += 0.01 # survival reward
             else:
                 assert False, 'unknown reward type...'
 
