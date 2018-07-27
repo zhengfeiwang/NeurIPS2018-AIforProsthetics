@@ -7,8 +7,10 @@ import ray
 from ray.tune.registry import register_env
 import ray.rllib.agents.ddpg as ddpg
 
-ACTION_REPEAT = 4
-CHECKPOINT_PATH = "<checkpoint-path>"
+ACTION_REPEAT = 2
+ACTOR_HIDDENS = [400, 300]
+CRITIC_HIDDENS = [400, 300]
+CHECKPOINT_PATH = "./output/checkpoint-499"
 
 
 def env_creator(env_config):
@@ -65,6 +67,9 @@ nb_actions = 19 #env.action_space.shape[0]
 
 register_env("ProstheticsEnv", env_creator)
 config = ddpg.DEFAULT_CONFIG.copy()
+config["actor_hiddens"] = ACTOR_HIDDENS
+config["critic_hiddens"] = CRITIC_HIDDENS
+
 agent = ddpg.DDPGAgent(env="ProstheticsEnv", config=config)
 agent.restore(checkpoint_path=CHECKPOINT_PATH)
 
