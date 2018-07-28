@@ -31,7 +31,7 @@ def configure(args):
 
     # DDPG specific
     config["noise_scale"] = args.noise_level
-    config["clip_rewards"] = False
+    config["clip_rewards"] = False  # essential for reward shaping
     config["learning_starts"] = args.warmup
     config["train_batch_size"] = args.batch_size
     config["gpu"] = args.gpu
