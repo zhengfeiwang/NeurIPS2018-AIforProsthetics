@@ -2,7 +2,7 @@ from osim.env import ProstheticsEnv
 import numpy as np
 from gym.spaces import Box
 
-CUSTOM_OBSERVATION_SPACE = 104
+CUSTOM_OBSERVATION_SPACE = 74
 
 
 class CustomEnv(ProstheticsEnv):
@@ -34,17 +34,18 @@ class CustomEnv(ProstheticsEnv):
                 reward = observation["body_pos"]["pelvis"][0] - self.prev_pelvis_pos
                 self.prev_pelvis_pos = observation["body_pos"]["pelvis"][0]
             elif self.reward_type == "shaped":
-                lean = min(0.3, max(0, observation["body_pos"]["pelvis"][0] - observation["body_pos"]["head"][0] - 0.15)) * 0.05
-                joint = sum([max(0, knee - 0.1) for knee in [observation["joint_pos"]["knee_l"][0], observation["joint_pos"]["knee_r"][0]]]) * 0.03
-                penalty = lean + joint
-                reward = observation["body_pos"]["pelvis"][0] - self.prev_pelvis_pos
+                # lean = min(0.3, max(0, observation["body_pos"]["pelvis"][0] - observation["body_pos"]["head"][0] - 0.15)) * 0.05
+                # joint = sum([max(0, knee - 0.1) for knee in [observation["joint_pos"]["knee_l"][0], observation["joint_pos"]["knee_r"][0]]]) * 0.03
+                # penalty = lean + joint
+                reward = reward * 0.1
+                reward += (observation["body_pos"]["pelvis"][0] - self.prev_pelvis_pos) * 10
                 self.prev_pelvis_pos = observation["body_pos"]["pelvis"][0]
-                reward -= penalty
-                #reward = reward + survival - penalty
+                survival = 1
+                reward = reward + survival
             else:
                 assert False, 'unknown reward type...'
 
-            cumulative_reward += reward * 10
+            cumulative_reward += reward
             if done:
                 break
         # transform dictionary to 1D vector
@@ -57,7 +58,7 @@ class CustomEnv(ProstheticsEnv):
         return self.custom_observation(observation)
     
     def custom_observation(self, observation):
-        # custom observation space 33 + 33 + 17 + 17 + 4 = 104D
+        # custom observation space 33 + 3 + 17 + 17 + 4 = 74D
         res = []
 
         BODY_PARTS = ['femur_r', 'pros_tibia_r', 'pros_foot_r', 'femur_l', 'tibia_l', 'talus_l', 'calcn_l', 'toes_l', 'torso', 'head']
@@ -72,6 +73,11 @@ class CustomEnv(ProstheticsEnv):
             for axis in range(3):
                 res += [observation["body_pos"][body_part][axis] - pelvis_pos[axis]]
 
+        # pelvis velocity - 3D
+        pelvis_vel = observation["body_vel"]["pelvis"]
+        res += pelvis_vel
+
+        """
         # body parts velocity relative to pelvis - 3 + 3 * 10D
         # pelvis relative velocity
         res += [0.0, 0.0, 0.0]
@@ -80,6 +86,7 @@ class CustomEnv(ProstheticsEnv):
             # x, y, z - axis
             for axis in range(3):
                 res += [observation["body_vel"][body_part][axis] - pelvis_vel[axis]]
+        """
         
         # joints absolute angle - 6 + 3 + 1 + 1 + 3 + 1 + 1 + 1D
         for joint in JOINTS:

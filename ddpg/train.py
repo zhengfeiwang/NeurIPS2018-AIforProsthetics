@@ -8,7 +8,7 @@ from ray.tune.registry import register_env
 from tensorboardX import SummaryWriter
 from evaluator import Evaluator
 
-MAX_STEPS_PER_ITERATION = 1000
+MAX_STEPS_PER_ITERATION = 300
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -30,9 +30,11 @@ def configure(args):
     config["model"]["squash_to_range"] = True # action clip
 
     # DDPG specific
-    config["gpu"] = args.gpu
-    config["train_batch_size"] = args.batch_size
+    config["noise_scale"] = args.noise_level
+    config["clip_rewards"] = False
     config["learning_starts"] = args.warmup
+    config["train_batch_size"] = args.batch_size
+    config["gpu"] = args.gpu
 
     actor_hiddens = []
     actor_layers = args.actor_hiddens.split('-')
@@ -70,6 +72,7 @@ if __name__ == "__main__":
     parser.add_argument("--action-repeat", default=4, type=int, help="repeat time for each action")
     parser.add_argument("--warmup", default=10000, type=int, help="number of random action before training")
     parser.add_argument("--reward-type", default="2018", type=str, help="reward type")
+    parser.add_argument("--noise-level", default=0.1, type=float, help="noise level")
     # environment
     parser.add_argument("--integrator-accuracy", default=1e-3, type=float, help="simulator integrator accuracy")
     parser.add_argument("--gpu", default=False, action="store_true", help="use GPU for optimization")

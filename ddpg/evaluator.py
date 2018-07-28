@@ -6,7 +6,7 @@ class Evaluator(object):
     def __init__(self, action_repeat, render=False):
         self.env = ProstheticsEnv(visualize=render)
         self.action_repeat = action_repeat
-        self.episode_length_max = 1000 // self.action_repeat
+        self.episode_length_max = 300 // self.action_repeat
 
     def __call__(self, agent):
         # the environment is deterministic, so only need to evaluate once
@@ -40,7 +40,7 @@ class Evaluator(object):
         BODY_PARTS = ['femur_r', 'pros_tibia_r', 'pros_foot_r', 'femur_l', 'tibia_l', 'talus_l', 'calcn_l', 'toes_l', 'torso', 'head']
         JOINTS = ['ground_pelvis', 'hip_r', 'knee_r', 'ankle_r', 'hip_l', 'knee_l', 'ankle_l', 'back']
         
-        # custom observation space 33 + 33 + 17 + 17 + 4 = 104D
+        # custom observation space 33 + 3 + 17 + 17 + 4 = 74D
         res = []
         
         # body parts positions relative to pelvis - 3 + 3 * 10D
@@ -52,6 +52,11 @@ class Evaluator(object):
             for axis in range(3):
                 res += [observation["body_pos"][body_part][axis] - pelvis_pos[axis]]
 
+        # pelvis velocity - 3D
+        pelvis_vel = observation["body_vel"]["pelvis"]
+        res += pelvis_vel
+
+        """
         # body parts velocity relative to pelvis - 3 + 3 * 10D
         # pelvis relative velocity
         res += [0.0, 0.0, 0.0]
@@ -60,6 +65,7 @@ class Evaluator(object):
             # x, y, z - axis
             for axis in range(3):
                 res += [observation["body_vel"][body_part][axis] - pelvis_vel[axis]]
+        """
         
         # joints absolute angle - 6 + 3 + 1 + 1 + 3 + 1 + 1 + 1D
         for joint in JOINTS:

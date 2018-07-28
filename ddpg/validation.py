@@ -8,13 +8,13 @@ import ray.rllib.agents.ddpg as ddpg
 from ray.tune.registry import register_env
 from evaluator import Evaluator
 
-MAX_STEPS_PER_ITERATION = 1000
+MAX_STEPS_PER_ITERATION = 300
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
 def custom_observation(observation):
-    # custom observation space 33 + 33 + 17 + 17 + 4 = 104D
+    # custom observation space 33 + 3 + 17 + 17 + 4 = 74D
     res = []
 
     BODY_PARTS = ['femur_r', 'pros_tibia_r', 'pros_foot_r', 'femur_l', 'tibia_l', 'talus_l', 'calcn_l', 'toes_l', 'torso', 'head']
@@ -29,6 +29,11 @@ def custom_observation(observation):
         for axis in range(3):
             res += [observation["body_pos"][body_part][axis] - pelvis_pos[axis]]
 
+    # pelvis velocity - 3D
+    pelvis_vel = observation["body_vel"]["pelvis"]
+    res += pelvis_vel
+
+    """
     # body parts velocity relative to pelvis - 3 + 3 * 10D
     # pelvis relative velocity
     res += [0.0, 0.0, 0.0]
@@ -37,6 +42,7 @@ def custom_observation(observation):
         # x, y, z - axis
         for axis in range(3):
             res += [observation["body_vel"][body_part][axis] - pelvis_vel[axis]]
+    """
         
     # joints absolute angle - 6 + 3 + 1 + 1 + 3 + 1 + 1 + 1D
     for joint in JOINTS:

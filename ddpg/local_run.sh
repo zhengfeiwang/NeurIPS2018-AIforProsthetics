@@ -1,3 +1,5 @@
 #!/bin/bash
-python train.py --num-workers=48 --num-cpus=48 \
---reward-type=shaped --gpu
+python train.py --num-workers=24 --num-cpus=28 \
+--reward-type=shaped --gpu \
+--checkpoint-interval=100 \
+--noise-level=0.5
