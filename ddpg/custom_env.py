@@ -39,12 +39,12 @@ class CustomEnv(ProstheticsEnv):
                 penalty = lean + joint
                 reward = observation["body_pos"]["pelvis"][0] - self.prev_pelvis_pos
                 self.prev_pelvis_pos = observation["body_pos"]["pelvis"][0]
-                reward += penalty
-                reward += 0.01 # survival reward
+                reward -= penalty
+                #reward = reward + survival - penalty
             else:
                 assert False, 'unknown reward type...'
 
-            cumulative_reward += reward
+            cumulative_reward += reward * 10
             if done:
                 break
         # transform dictionary to 1D vector
