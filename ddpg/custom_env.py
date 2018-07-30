@@ -34,12 +34,14 @@ class CustomEnv(ProstheticsEnv):
                 reward = observation["body_pos"]["pelvis"][0] - self.prev_pelvis_pos
                 self.prev_pelvis_pos = observation["body_pos"]["pelvis"][0]
             elif self.reward_type == "shaped":
+                # essential: consider reward clip to [-1, 1]
+                # 2018 reward
+                original_reward = reward * 0.01
+                # hzwer penalty
                 lean = min(0.3, max(0, observation["body_pos"]["pelvis"][0] - observation["body_pos"]["head"][0] - 0.15)) * 0.05
                 joint = sum([max(0, knee - 0.1) for knee in [observation["joint_pos"]["knee_l"][0], observation["joint_pos"]["knee_r"][0]]]) * 0.03
                 penalty = lean + joint
-                reward = observation["body_pos"]["pelvis"][0] - self.prev_pelvis_pos
-                self.prev_pelvis_pos = observation["body_pos"]["pelvis"][0]
-                reward -= penalty
+                reward = original_reward - penalty
             else:
                 assert False, 'unknown reward type...'
 
