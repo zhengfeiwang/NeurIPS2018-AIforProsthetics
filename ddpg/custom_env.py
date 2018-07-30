@@ -50,7 +50,9 @@ class CustomEnv(ProstheticsEnv):
                 break
         # transform dictionary to 1D vector
         observation = self.custom_observation(observation)
-        return observation, cumulative_reward, done, info
+        # clip rewards to [-1, 1]
+        clipped_reward = np.clip(cumulative_reward, -1.0, 1.0)
+        return observation, clipped_reward, done, info
 
     def reset(self):
         observation = self.env.reset(project=False)
