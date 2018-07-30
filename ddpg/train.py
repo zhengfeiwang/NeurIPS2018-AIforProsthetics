@@ -32,6 +32,7 @@ def configure(args):
     # DDPG specific
     config["noise_scale"] = args.noise_level
     config["clip_rewards"] = False  # clip rewards in RLlib: reward = np.sign(reward) -> -1, 0, 1
+    config["l2_reg"] = 0.02 # L2 regularization
     config["learning_starts"] = args.warmup
     config["train_batch_size"] = args.batch_size
     config["gpu"] = args.gpu

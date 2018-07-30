@@ -1,7 +1,9 @@
 from osim.env import ProstheticsEnv
 import numpy as np
 from gym.spaces import Box
+from utils import process_observation
 
+MAX_STEPS_PER_EPISODE = 300
 CUSTOM_OBSERVATION_SPACE = 85
 
 
@@ -18,6 +20,7 @@ class CustomEnv(ProstheticsEnv):
         # reward shaping
         self.reward_type = reward_type
         self.prev_pelvis_pos = 0.0
+        self.episode_steps = 0
 
     def step(self, action):
         cumulative_reward = 0.0
@@ -41,16 +44,19 @@ class CustomEnv(ProstheticsEnv):
                 joint = sum([max(0, knee - 0.1) for knee in [observation["joint_pos"]["knee_l"][0], observation["joint_pos"]["knee_r"][0]]]) * 0.03
                 penalty = lean + joint
                 # survival
-                survival = 0.1
-                reward = velocity * 0.1 - penalty + survival
+                survival = 0.02
+                reward = velocity - penalty + survival
             else:
                 assert False, 'unknown reward type...'
 
             cumulative_reward += reward
             if done:
+                # punish for failure
+                if self.episode_steps < MAX_STEPS_PER_EPISODE:
+                    cumulative_reward -= 0.2
                 break
         # transform dictionary to 1D vector
-        observation = self.custom_observation(observation)
+        observation = process_observation(observation)
         # clip rewards to [-1, 1]
         clipped_reward = np.clip(cumulative_reward, -1.0, 1.0)
         return observation, clipped_reward, done, info
@@ -58,55 +64,5 @@ class CustomEnv(ProstheticsEnv):
     def reset(self):
         observation = self.env.reset(project=False)
         self.prev_pelvis_pos = 0.0
-        return self.custom_observation(observation)
-    
-    def custom_observation(self, observation):
-        # custom observation space 44 + 3 + 17 + 17 + 4 = 85D
-        res = []
-
-        BODY_PARTS = ['femur_r', 'pros_tibia_r', 'pros_foot_r', 'femur_l', 'tibia_l', 'talus_l', 'calcn_l', 'toes_l', 'torso', 'head']
-        JOINTS = ['ground_pelvis', 'hip_r', 'knee_r', 'ankle_r', 'hip_l', 'knee_l', 'ankle_l', 'back']
-        
-        # body parts positions relative to pelvis - (3 + 1) + (3 + 1) * 10D
-        # pelvis relative position
-        res += [0.0, 0.0, 0.0]
-        res += [observation["body_pos"]["pelvis"][1]]   # absolute pelvis.y
-        pelvis_pos = observation["body_pos"]["pelvis"]
-        for body_part in BODY_PARTS:
-            # x, y, z - axis
-            for axis in range(3):
-                res += [observation["body_pos"][body_part][axis] - pelvis_pos[axis]]
-            res += [observation["body_pos"][body_part][1]] # absolute height
-
-        # pelvis velocity - 3D
-        pelvis_vel = observation["body_vel"]["pelvis"]
-        res += pelvis_vel
-
-        """
-        # body parts velocity relative to pelvis - 3 + 3 * 10D
-        # pelvis relative velocity
-        res += [0.0, 0.0, 0.0]
-        pelvis_vel = observation["body_vel"]["pelvis"]
-        for body_part in BODY_PARTS:
-            # x, y, z - axis
-            for axis in range(3):
-                res += [observation["body_vel"][body_part][axis] - pelvis_vel[axis]]
-        """
-        
-        # joints absolute angle - 6 + 3 + 1 + 1 + 3 + 1 + 1 + 1D
-        for joint in JOINTS:
-            for i in range(len(observation["joint_pos"][joint])):
-                res += [observation["joint_pos"][joint][i]]
-        
-        # joints absolute angular velocity - 6 + 3 + 1 + 1 + 3 + 1 + 1 + 1D
-        for joint in JOINTS:
-            for i in range(len(observation["joint_vel"][joint])):
-                res += [observation["joint_vel"][joint][i]]
-        
-        # center of mass position and velocity - 2 + 2D
-        for axis in range(2):
-            res += [observation["misc"]["mass_center_pos"][axis] - pelvis_pos[axis]]
-        for axis in range(2):
-            res += [observation["misc"]["mass_center_vel"][axis] - pelvis_vel[axis]]
-            
-        return res
+        self.episode_steps = 0
+        return process_observation(observation)
