@@ -41,7 +41,9 @@ class CustomEnv(ProstheticsEnv):
                 lean = min(0.3, max(0, observation["body_pos"]["pelvis"][0] - observation["body_pos"]["head"][0] - 0.15)) * 0.05
                 joint = sum([max(0, knee - 0.1) for knee in [observation["joint_pos"]["knee_l"][0], observation["joint_pos"]["knee_r"][0]]]) * 0.03
                 penalty = lean + joint
-                reward = original_reward - penalty
+                # survival
+                survival = 0.01
+                reward = original_reward - penalty + survival
             else:
                 assert False, 'unknown reward type...'
 
