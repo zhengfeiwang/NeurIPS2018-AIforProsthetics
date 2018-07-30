@@ -30,9 +30,8 @@ def configure(args):
     config["model"]["squash_to_range"] = True # action clip
 
     # DDPG specific
-    config["timesteps_per_iteration"] = MAX_STEPS_PER_ITERATION // args.action_repeat
     config["noise_scale"] = args.noise_level
-    config["clip_rewards"] = False  # clip rewards: reward = np.sign(reward) -> -1, 0, 1
+    config["clip_rewards"] = False  # clip rewards in RLlib: reward = np.sign(reward) -> -1, 0, 1
     config["learning_starts"] = args.warmup
     config["train_batch_size"] = args.batch_size
     config["gpu"] = args.gpu
