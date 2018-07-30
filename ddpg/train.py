@@ -49,6 +49,8 @@ def configure(args):
     config["actor_hidden_activation"] = args.actor_activation
     config["critic_hiddens"] = critic_hiddens
     config["critic_hidden_activation"] = args.critic_activation
+    config["actor_lr"] = args.actor_learning_rate
+    config["critic_lr"] = args.critic_learning_rate
     
     return config
 
@@ -111,10 +113,10 @@ if __name__ == "__main__":
         # log out useful information
         logger.info('training iteration: #{}'.format(train_result.training_iteration))
         logger.info('time this iteration: {}'.format(train_result.time_this_iter_s))
-        logger.debug('  sample time: {}'.format(train_result.info["sample_time_ms"] / 1000 * train_result.timesteps_this_iter))
-        logger.debug('  replay time: {}'.format(train_result.info["replay_time_ms"] / 1000 * train_result.timesteps_this_iter))
-        logger.debug('  gradient time: {}'.format(train_result.info["grad_time_ms"] / 1000 * train_result.timesteps_this_iter))
-        logger.debug('  update time: {}'.format(train_result.info["update_time_ms"] / 1000 * train_result.timesteps_this_iter))
+        logger.debug('  sample time: {}'.format(train_result.info["sample_time_ms"]))
+        logger.debug('  replay time: {}'.format(train_result.info["replay_time_ms"]))
+        logger.debug('  gradient time: {}'.format(train_result.info["grad_time_ms"]))
+        logger.debug('  update time: {}'.format(train_result.info["update_time_ms"]))
         logger.debug('timestep number this iteration: {}'.format(train_result.timesteps_this_iter))
         logger.debug('total timesteps: {}'.format(train_result.timesteps_total))
         logger.debug('episode number this iteration: {}'.format(train_result.episodes_total))
