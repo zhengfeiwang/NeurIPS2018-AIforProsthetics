@@ -51,7 +51,7 @@ class CustomEnv(ProstheticsEnv):
                 assert False, 'unknown reward type...'
 
             cumulative_reward += reward
-            if done:
+            if done or self.episode_steps >= MAX_STEPS_PER_EPISODE:
                 # punish for failure
                 if self.episode_steps < MAX_STEPS_PER_EPISODE:
                     cumulative_reward -= 0.2
