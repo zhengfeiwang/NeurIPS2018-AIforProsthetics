@@ -8,7 +8,7 @@ from ray.tune.registry import register_env
 from tensorboardX import SummaryWriter
 from evaluator import Evaluator
 
-MAX_STEPS_PER_ITERATION = 300
+MAX_STEPS_PER_EPISODE = 300
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ def configure(args):
     config = ddpg.DEFAULT_CONFIG.copy()
 
     # common
-    config["horizon"] = MAX_STEPS_PER_ITERATION // args.action_repeat
+    config["horizon"] = MAX_STEPS_PER_EPISODE // args.action_repeat
     config["num_workers"] = args.num_workers
     config["model"]["squash_to_range"] = True # action clip
 
