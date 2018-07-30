@@ -30,6 +30,7 @@ class CustomEnv(ProstheticsEnv):
 
         for _ in range(self.action_repeat):
             observation, reward, done, info = self.env.step(action, project=False)
+            self.episode_steps += 1
 
             if self.reward_type == "2018":
                 reward = reward
