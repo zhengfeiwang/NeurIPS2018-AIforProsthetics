@@ -31,6 +31,7 @@ def configure(args):
 
     # DDPG specific
     config["noise_scale"] = args.noise_level
+    config["buffer_size"] = args.replay_buffer_size
     config["clip_rewards"] = False  # clip rewards in RLlib: reward = np.sign(reward) -> -1, 0, 1
     config["l2_reg"] = 0.02 # L2 regularization
     config["learning_starts"] = args.warmup
@@ -76,6 +77,7 @@ if __name__ == "__main__":
     parser.add_argument("--warmup", default=10000, type=int, help="number of random action before training")
     parser.add_argument("--reward-type", default="2018", type=str, help="reward type")
     parser.add_argument("--noise-level", default=0.1, type=float, help="noise level")
+    parser.add_argument("--replay-buffer-size", default=10000, type=int, help="replay buffer size")
     # environment
     parser.add_argument("--integrator-accuracy", default=1e-3, type=float, help="simulator integrator accuracy")
     parser.add_argument("--gpu", default=False, action="store_true", help="use GPU for optimization")
@@ -111,26 +113,31 @@ if __name__ == "__main__":
     # agent training
     while True:
         train_result = agent.train()
+
         # log out useful information
         logger.info('training iteration: #{}'.format(train_result.training_iteration))
         logger.info('time this iteration: {}'.format(train_result.time_this_iter_s))
-        logger.debug('  sample time: {}'.format(train_result.info["sample_time_ms"]))
-        logger.debug('  replay time: {}'.format(train_result.info["replay_time_ms"]))
-        logger.debug('  gradient time: {}'.format(train_result.info["grad_time_ms"]))
-        logger.debug('  update time: {}'.format(train_result.info["update_time_ms"]))
-        logger.debug('timestep number this iteration: {}'.format(train_result.timesteps_this_iter))
-        logger.debug('total timesteps: {}'.format(train_result.timesteps_total))
-        logger.debug('episode number this iteration: {}'.format(train_result.episodes_total))
-        logger.debug('episode mean length: {} (x{})'.format(train_result.episode_len_mean, args.action_repeat))
-        logger.debug('episode reward:')
-        logger.debug('  [mean] {}'.format(train_result.episode_reward_mean))
-        logger.debug('  [max] {}'.format(train_result.episode_reward_max))
-        logger.debug('  [min] {}'.format(train_result.episode_reward_min))
+        if train_result.timesteps_this_iter > 0:
+            logger.debug('  sample time: {}'.format(train_result.info["sample_time_ms"]))
+            logger.debug('  replay time: {}'.format(train_result.info["replay_time_ms"]))
+            logger.debug('  gradient time: {}'.format(train_result.info["grad_time_ms"]))
+            logger.debug('  update time: {}'.format(train_result.info["update_time_ms"]))
+            logger.debug('timestep number this iteration: {}'.format(train_result.timesteps_this_iter))
+            logger.debug('total timesteps: {}'.format(train_result.timesteps_total))
+            logger.debug('episode number this iteration: {}'.format(train_result.episodes_total))
+            logger.debug('episode mean length: {} (x{})'.format(train_result.episode_len_mean, args.action_repeat))
+            logger.debug('episode reward:')
+            logger.debug('  [mean] {}'.format(train_result.episode_reward_mean))
+            logger.debug('  [max] {}'.format(train_result.episode_reward_max))
+            logger.debug('  [min] {}'.format(train_result.episode_reward_min))
+            # record mean reward and episode length in private tensorboard
+            writer.add_scalar('train/mean_reward', train_result.episode_reward_mean, train_result.training_iteration)
+            writer.add_scalar('train/mean_steps', train_result.episode_len_mean, train_result.training_iteration)
+        else:
+            logger.debug('<no timestep this iteration>')
         logger.debug('--------------------------------------------------')
 
-        # record train information in private tensorboard
-        writer.add_scalar('train/mean_reward', train_result.episode_reward_mean, train_result.training_iteration)
-        writer.add_scalar('train/mean_steps', train_result.episode_len_mean, train_result.training_iteration)
+        # record train time this iteration in private tensorboard
         writer.add_scalar('train/time', train_result.time_this_iter_s, train_result.training_iteration)
 
         # validation
