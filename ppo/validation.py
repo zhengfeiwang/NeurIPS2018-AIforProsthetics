@@ -28,6 +28,7 @@ if __name__ == "__main__":
     parser.add_argument("--checkpoint-dir", default="output", type=str, help="checkpoint output directory")
     parser.add_argument("--checkpoint-id", default=None, type=str, help="id of checkpoint file")
     parser.add_argument("--no-render", default=False, action="store_true", help="no visualization for evaluation")
+    parser.add_argument("--debug", default=False, action="store_true", help="log out interval information during episode")
     
     args = parser.parse_args()
 
@@ -42,8 +43,8 @@ if __name__ == "__main__":
     checkpoint_path = os.path.join(args.checkpoint_dir, "checkpoint-" + str(args.checkpoint_id))
     agent.restore(checkpoint_path=checkpoint_path)
 
-    evaluation_reward, evaluation_steps = evaluator(agent)
+    evaluation_reward, evaluation_steps = evaluator(agent, debug=args.debug)
     logger.info('score: {}'.format(evaluation_reward))
-    logger.info('steps: {}'.format(evaluation_steps))
+    logger.info('episode length: {}'.format(evaluation_steps))
 
     evaluator.close()

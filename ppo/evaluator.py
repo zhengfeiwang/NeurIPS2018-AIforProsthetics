@@ -10,7 +10,7 @@ class Evaluator(object):
         self.binary_action = binary_action
         self.episode_length_max = 300 // self.action_repeat
 
-    def __call__(self, agent):
+    def __call__(self, agent, debug=False):
         # the environment is deterministic, so only need to evaluate once
         episode_reward = 0.0
         episode_steps = 0
@@ -33,6 +33,14 @@ class Evaluator(object):
                 observation, reward, done, _ = self.env.step(action, project=False)
                 episode_steps += 1
                 episode_reward += reward
+
+                # debug mode, log out useful information
+                if debug:
+                    print("step #{}:".format(episode_steps))
+                    print("pelvis")
+                    print(" - height: {}".format(observation["body_pos"]["pelvis"][1]))
+                    print(" - velocity: {}".format(observation["body_vel"]["pelvis"]))
+                    print("environment reward: {}".format(reward))
 
                 if done:
                     break
