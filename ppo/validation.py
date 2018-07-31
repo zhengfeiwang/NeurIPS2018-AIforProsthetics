@@ -37,7 +37,11 @@ if __name__ == "__main__":
     register_env("CustomEnv", env_creator)
     config = ppo.DEFAULT_CONFIG.copy()
 
-    evaluator = Evaluator(args.action_repeat, render=True if args.no_render is False else False)
+    evaluator = Evaluator(
+        args.action_repeat, 
+        render=True if args.no_render is False else False, 
+        binary_action=args.binary_action
+    )
 
     agent = ppo.PPOAgent(env="CustomEnv", config=config)
     checkpoint_path = os.path.join(args.checkpoint_dir, "checkpoint-" + str(args.checkpoint_id))
