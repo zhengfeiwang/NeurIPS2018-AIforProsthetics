@@ -76,9 +76,9 @@ if __name__ == "__main__":
         seed = args.seed
     else:
         seed = np.random.randint(0, 2**32)
-    random.seed(args.seed)
-    np.random.seed(args.seed)
-    tf.set_random_seed(args.seed)
+    random.seed(seed)
+    np.random.seed(seed)
+    tf.set_random_seed(seed)
     logger.debug('random seed: {}'.format(seed))
 
     if args.cluster is True:
