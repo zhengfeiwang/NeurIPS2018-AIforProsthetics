@@ -27,7 +27,11 @@ class Evaluator(object):
                 for i in range(len(action)):
                     action[i] = 1.0 if action[i] > 0.5 else 0.0
             else:
-                action = np.clip(action, 0.0, 1.0)
+                for i in range(len(action)):
+                    if action[i] > 1.0:
+                        action[i] = 1.0
+                    if action[i] < 0.0:
+                        action[i] = 0.0
 
             for _ in range(self.action_repeat):
                 observation, reward, done, _ = self.env.step(action, project=False)
@@ -36,6 +40,7 @@ class Evaluator(object):
 
                 # debug mode, log out useful information
                 if debug:
+                    print("action: {}".format(action))
                     print("step #{}:".format(episode_steps))
                     print("pelvis")
                     print(" - height: {}".format(observation["body_pos"]["pelvis"][1]))

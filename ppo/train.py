@@ -1,7 +1,10 @@
 import os
 import time
+import random
 import argparse
 import logging
+import numpy as np
+import tensorflow as tf
 import ray
 import ray.rllib.agents.ppo as ppo
 from ray.tune.registry import register_env
@@ -63,8 +66,20 @@ if __name__ == "__main__":
     parser.add_argument("--checkpoint-dir", default="output", type=str, help="checkpoint output directory")
     parser.add_argument("--checkpoint-interval", default=5, type=int, help="iteration interval for checkpoint")
     parser.add_argument("--validation-interval", default=5, type=int, help="iteration interval for validation")
+    # random seed
+    parser.add_argument("--seed", default=-1, type=int, help="random seed")
     
     args = parser.parse_args()
+
+    # set random seed
+    if args.seed > 0:
+        seed = args.seed
+    else:
+        seed = np.random.randint(0, 2**32)
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    tf.set_random_seed(args.seed)
+    logger.debug('random seed: {}'.format(seed))
 
     if args.cluster is True:
         ray.init(redis_address=args.redis_address)
