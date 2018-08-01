@@ -60,7 +60,8 @@ class CustomEnv(ProstheticsEnv):
                 break
         # transform dictionary to 1D vector
         observation = process_observation(observation)
-        # clip rewards
+        # reward rescale and clip
+        cumulative_reward /= self.action_repeat
         clipped_reward = -1.0 if cumulative_reward < -1.0 else cumulative_reward
         return observation, clipped_reward, done, info
 
