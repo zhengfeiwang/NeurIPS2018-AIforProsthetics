@@ -42,23 +42,26 @@ class CustomEnv(ProstheticsEnv):
                 reward = observation["body_pos"]["pelvis"][0] - self.prev_pelvis_pos
                 self.prev_pelvis_pos = observation["body_pos"]["pelvis"][0]
             elif self.reward_type == "shaped":
-                # essential: consider reward clip
+                # translation
+                translation = observation["body_pos"]["pelvis"][0] - self.prev_pelvis_pos
+                self.prev_pelvis_pos = observation["body_pos"]["pelvis"][0]
                 # survival
-                survival = 1.0
-                reward = reward * 0.05 + survival
+                survival = 0.05
+                # shaped reward
+                reward = reward * 0.05 + min(translation * 10, 0.3) + survival
             else:
                 assert False, 'unknown reward type...'
 
             cumulative_reward += reward
             if done or self.episode_steps >= MAX_STEPS_PER_EPISODE:
                 # punish for failure
-                # if self.episode_steps < MAX_STEPS_PER_EPISODE:
-                #    cumulative_reward -= 0.2
+                if self.episode_steps < MAX_STEPS_PER_EPISODE:
+                    cumulative_reward -= 0.5
                 break
         # transform dictionary to 1D vector
         observation = process_observation(observation)
-        # clip rewards to [-1.5, 1.5]
-        clipped_reward = np.clip(cumulative_reward, -1.0, 1.2)
+        # clip rewards
+        clipped_reward = -1.0 if cumulative_reward < -1.0 else cumulative_reward
         return observation, clipped_reward, done, info
 
     def reset(self):
