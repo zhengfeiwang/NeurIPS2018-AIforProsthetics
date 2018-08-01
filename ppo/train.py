@@ -29,12 +29,14 @@ def configure(args):
     config = ppo.DEFAULT_CONFIG.copy()
 
     # common
+    config["gamma"] = args.gamma
     config["horizon"] = MAX_STEPS_PER_EPISODE // args.action_repeat
     config["num_workers"] = args.num_workers
     config["model"]["squash_to_range"] = True # action clip
 
     # PPO specific
-    config["timesteps_per_batch"] = args.num_workers * (MAX_STEPS_PER_EPISODE // args.action_repeat) # an episode per worker
+    config["kl_coeff"] = args.kl_coeff
+    config["timesteps_per_batch"] = args.timesteps_per_batch
     config["num_sgd_iter"] = args.epochs
     config["sgd_stepsize"] = args.stepsize
     config["sgd_batchsize"] = args.batch_size
@@ -52,6 +54,9 @@ if __name__ == "__main__":
     parser.add_argument("--num-cpus", default=1, type=int, help="number of local cpus")
     parser.add_argument("--cluster", default=False, action="store_true", help="whether use cluster or local computer")
     # hyperparameters
+    parser.add_argument("--gamma", default=0.99, type=float, help="discount factor of the MDP")
+    parser.add_argument("--kl-coeff", default=0.2, type=float, help="initial coefficient for KL divergence")
+    parser.add_argument("--timesteps-per-batch", default=4000, type=int, help="number of timesteps collected")
     parser.add_argument("--epochs", default=30, type=int, help="number of epoch")
     parser.add_argument("--batch-size", default=128, type=int, help="minibatch size")
     parser.add_argument("--stepsize", default=5e-5, type=float, help="stepsize for optimization")
