@@ -6,7 +6,7 @@ import numpy as np
 from evaluator import Evaluator
 from my_env import MyEnv
 
-
+# sample function, for multi thread
 def sample(agent, writer, logger, episode, lock, args):
     env = MyEnv(accuracy=args.accuracy, action_repeat=args.action_repeat, reward_type=args.reward_type)
     max_episode_length = args.max_episode_length // args.action_repeat
@@ -19,7 +19,7 @@ def sample(agent, writer, logger, episode, lock, args):
     done = False
     while not done and episode_steps < max_episode_length:
         # obtain an action
-        if episode < args.warmup and args.resume is None:
+        if episode < args.warmup_episodes and args.resume is False:
             action = agent.random_action()
         else:
             lock.acquire()
@@ -36,41 +36,49 @@ def sample(agent, writer, logger, episode, lock, args):
         episode_reward += reward
     
     env.close()
+
+    # summary and logger
     lock.acquire()
-    writer.add_scalar('sample/score', episode_reward, episode)
-    writer.add_scalar('sample/stpes', episode_steps, episode)
-    logger.debug(' [sample] episode #{}: score = {}, steps = {}'.format(episode, episode_reward, episode_steps))
+    writer.add_scalar('sample/episode_reward', episode_reward, episode)
+    writer.add_scalar('sample/episode_length', episode_steps, episode)
+    logger.debug('[sample] episode #{}: reward = {}, length = {}'.format(episode, episode_reward, episode_steps))
     lock.release()
 
 
 def train(agent, writer, logger, args):
-    lock = Lock()
-    log = iteration = episode = 0
     num_workers = args.num_workers
-    checkpoint_num = 0 if args.resume is None else args.resume_num
+    lock = Lock()
+
+    log = iteration = episode = 0
+    checkpoint_num = 0 if args.resume is False else args.resume_num
     
     evaluator = Evaluator(args)
 
     logger.debug('----------------- random sampling -----------------')
-    if args.resume is None:
-        while episode < args.warmup:
+    if args.resume is False:
+        while episode < args.warmup_episodes:
             threads = []
             for _ in range(num_workers):
                 thread = threading.Thread(target=sample, args=(agent, writer, logger, episode, lock, args,))
                 thread.setDaemon(True)
                 threads.append(thread)
                 episode += 1
+                if episode >= args.warmup_episodes:
+                    break
 
             for thread in threads:
                 thread.start()
             for thread in threads:
                 thread.join()
             
-            writer.add_scalar('sample/replay buffer size', agent.memory.size(), episode)
-            logger.debug('[internal] replay buffer size: {}'.format(agent.memory.size()))
+            writer.add_scalar('sample/replay_buffer_size', agent.memory.size(), episode)
+            logger.debug('[warmup] replay buffer size: {}'.format(agent.memory.size()))
     logger.debug('------------------ warmup finish ------------------')
+    logger.info('warmup finish, replay buffer size: {}'.format(agent.memory.size()))
 
+    logger.debug('--------------- training iterations ---------------')
     while iteration < args.nb_iterations:
+        logger.debug('<----- iterations #{} ----->'.format(iteration))
         threads = []
         for _ in range(num_workers):
             thread = threading.Thread(target=sample, args=(agent, writer, logger, episode, lock, args,))
@@ -84,25 +92,31 @@ def train(agent, writer, logger, args):
         for thread in threads:
             thread.join()
 
-        writer.add_scalar('sample/replay buffer size', agent.memory.size(), episode)
-        logger.debug(' [internal] replay buffer size: {}'.format(agent.memory.size()))
+        writer.add_scalar('sample/replay_buffer_size', agent.memory.size(), episode)
+        logger.debug('[training] replay buffer size: {}'.format(agent.memory.size()))
 
-        for _ in range(args.nb_train_steps):
-            iteration += 1
+        for _ in range(args.nb_train_epochs):
             Q, critic_loss, critic_output = agent.update_policy()
             log += 1
             writer.add_scalar('train/Q', Q, log)
-            writer.add_scalar('train/critic loss', critic_loss, log)
-            writer.add_scalar('train/critic output', critic_output, log)
+            writer.add_scalar('train/critic_loss', critic_loss, log)
+            writer.add_scalar('train/critic_output', critic_output, log)
+            logger.debug('[training] Q value: {}'.format(Q))
+            logger.debug('[training] critic loss: {}'.format(critic_loss))
         
         # validation
-        validation_rewards, validation_steps = evaluator(agent.select_action, logger)
-        writer.add_scalar('validation/scores', np.mean(validation_rewards), iteration)
-        writer.add_scalar('validation/steps', np.mean(validation_steps), iteration)
-        logger.info(' [validation] scores = {}, steps = {}'.format(np.mean(validation_rewards), np.mean(validation_steps)))
+        if iteration > 0 and iteration % args.validation_interval == 0:
+            validation_rewards, validation_steps = evaluator(agent.select_action, logger)
+            writer.add_scalar('validation/score', np.mean(validation_rewards), iteration)
+            writer.add_scalar('validation/steps', np.mean(validation_steps), iteration)
+            logger.info('[validation] iteration #{}: scores = {}, steps = {}'.format(
+                iteration, np.mean(validation_rewards), np.mean(validation_steps)
+            ))
 
         # checkpoint
-        if iteration % args.checkpoint_interval == 0:
+        if iteration > 0 and iteration % args.checkpoint_interval == 0:
             checkpoint_num += 1
-            logger.debug(' [checkpoint] #{} at {}'.format(checkpoint_num, args.output))
             agent.save_model(args.output, checkpoint_num)
+            logger.info('[checkpoint] iteration #{}: checkpoint-{}'.format(iteration, checkpoint_num))
+        
+        iteration += 1
