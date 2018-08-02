@@ -1,39 +1,47 @@
-def process_observation(observation):
-    # custom observation space 44 + 3 + 17 + 17 + 4 = 85D
-    res = []
+import numpy as np
+import torch
 
-    BODY_PARTS = ['femur_r', 'pros_tibia_r', 'pros_foot_r', 'femur_l', 'tibia_l', 'talus_l', 'calcn_l', 'toes_l', 'torso', 'head']
-    JOINTS = ['ground_pelvis', 'hip_r', 'knee_r', 'ankle_r', 'hip_l', 'knee_l', 'ankle_l', 'back']
-        
-    # body parts positions relative to pelvis - (3 + 1) + (3 + 1) * 10 = 44D
-    # pelvis relative position
-    res += [0.0, 0.0, 0.0]
-    res += [observation["body_pos"]["pelvis"][1]]   # absolute pelvis.y
-    pelvis_pos = observation["body_pos"]["pelvis"]
-    for body_part in BODY_PARTS:
-        # x, y, z - axis
-        for axis in range(3):
-            res += [observation["body_pos"][body_part][axis] - pelvis_pos[axis]]
-        res += [observation["body_pos"][body_part][1]] # absolute height
 
-    # pelvis velocity - 3D
-    pelvis_vel = observation["body_vel"]["pelvis"]
-    res += pelvis_vel
-        
-    # joints absolute angle - 6 + 3 + 1 + 1 + 3 + 1 + 1 + 1 = 17D
-    for joint in JOINTS:
-        for i in range(len(observation["joint_pos"][joint])):
-            res += [observation["joint_pos"][joint][i]]
-        
-    # joints absolute angular velocity - 6 + 3 + 1 + 1 + 3 + 1 + 1 + 1 = 17D
-    for joint in JOINTS:
-        for i in range(len(observation["joint_vel"][joint])):
-            res += [observation["joint_vel"][joint][i]]
-        
-    # center of mass position and velocity - 2 + 2 = 4D
-    for axis in range(2):
-        res += [observation["misc"]["mass_center_pos"][axis] - pelvis_pos[axis]]
-    for axis in range(2):
-        res += [observation["misc"]["mass_center_vel"][axis] - pelvis_vel[axis]]
-            
-    return res
+class Noise(object):
+    def __init__(self, size):
+        self.size = size
+
+    def sample(self):
+        return np.random.normal(size=self.size)
+
+
+class OrnsteinUhlenbeckProcess(object):
+    def __init__(self, mu, sigma, theta=.15, dt=1e-2, x0=None):
+        self.mu = mu
+        self.sigma = sigma
+        self.theta = theta
+        self.dt = dt
+        self.x0 = x0
+        self.reset()
+
+    def reset(self):
+        self.x_prev = self.x0 if self.x0 is not None else np.zeros_like(self.mu)
+
+    def sample(self):
+        x = self.x_prev + self.theta * (self.mu - self.x_prev) * self.dt + \
+            self.sigma * np.sqrt(self.dt) * np.random.normal(size=self.mu.shape)
+        self.x_prev = x
+        return x
+
+
+def to_numpy(tensor):
+    return tensor.to(torch.device("cpu")).detach().numpy()
+
+
+def to_tensor(ndarray, dtype=torch.float, device=torch.device("cpu"), requires_grad=False):
+    return torch.tensor(ndarray, dtype=dtype, device=device, requires_grad=requires_grad)
+
+
+def soft_update(target, source, tau):
+    for target_param, source_param in zip(target.parameters(), source.parameters()):
+        target_param.data.copy_(target_param.data * (1.0 - tau) + source_param.data * tau)
+
+
+def hard_update(target, source):
+    for target_param, source_param in zip(target.parameters(), source.parameters()):
+        target_param.data.copy_(source_param.data)
