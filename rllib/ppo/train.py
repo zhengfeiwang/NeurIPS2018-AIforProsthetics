@@ -31,7 +31,7 @@ def configure(args):
     config["gamma"] = args.gamma
     config["horizon"] = MAX_STEPS_PER_EPISODE // args.action_repeat
     config["num_workers"] = args.num_workers
-    config["sample_batch_size"] = args.timesteps_per_batch // args.num_workers
+    config["sample_batch_size"] = args.timesteps_per_batch // (args.num_workers * 2)
     config["batch_mode"] = "truncate_episodes"
     config["model"]["squash_to_range"] = True # action clip
 
