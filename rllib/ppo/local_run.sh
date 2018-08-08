@@ -15,5 +15,5 @@ python train.py \
 # algorithms parameters
 --reward-type=shaped \
 --gamma=0.995 --kl-coeff=1.0 \
---timesteps-per-batch=1024 \
---epoch=20 --batch-size=256 --stepsize=0.0001
+--timesteps-per-batch=2048 \
+--epoch=10 --batch-size=256 --stepsize=0.0001
