@@ -32,6 +32,8 @@ def configure(args):
     config["gamma"] = args.gamma
     config["horizon"] = MAX_STEPS_PER_EPISODE // args.action_repeat
     config["num_workers"] = args.num_workers
+    config["sample_batch_size"] = args.timesteps_per_batch // (args.num_workers * 2)
+    config["batch_mode"] = "truncate_episodes"
     config["model"]["squash_to_range"] = True # action clip
 
     # PPO specific
@@ -64,7 +66,7 @@ if __name__ == "__main__":
     parser.add_argument("--binary-action", default=False, action="store_true", help="action can only be 0 or 1")
     parser.add_argument("--reward-type", default="2018", type=str, help="reward type")
     # environment
-    parser.add_argument("--integrator-accuracy", default=1e-3, type=float, help="simulator integrator accuracy")
+    parser.add_argument("--integrator-accuracy", default=5e-5, type=float, help="simulator integrator accuracy")
     parser.add_argument("--gpu", default=False, action="store_true", help="use GPU for optimization")
     parser.add_argument("--num-gpus", default=None, type=int, help="number of gpus")
     # checkpoint and validation
