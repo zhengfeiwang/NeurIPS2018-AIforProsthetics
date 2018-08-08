@@ -4,10 +4,9 @@ from utils import process_observation
 
 
 class Evaluator(object):
-    def __init__(self, action_repeat, render=False, binary_action=False):
+    def __init__(self, action_repeat, render=False):
         self.env = ProstheticsEnv(visualize=render)
         self.action_repeat = action_repeat
-        self.binary_action = binary_action
         self.episode_length_max = 300 // self.action_repeat
 
     def __call__(self, agent, debug=False):
@@ -23,11 +22,7 @@ class Evaluator(object):
         while not done and episode_steps <= self.episode_length_max:
             # compute action
             action = agent.compute_action(observation)
-            if self.binary_action:
-                for i in range(len(action)):
-                    action[i] = 1.0 if action[i] > 0.5 else 0.0
-            else:
-                action = np.clip(action, 0.0, 1.0)
+            action = np.clip(action, 0.0, 1.0)
 
             for _ in range(self.action_repeat):
                 observation, reward, done, _ = self.env.step(action, project=False)

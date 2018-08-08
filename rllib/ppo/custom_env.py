@@ -8,11 +8,10 @@ CUSTOM_OBSERVATION_SPACE = 85
 
 
 class CustomEnv(ProstheticsEnv):
-    def __init__(self, action_repeat, integrator_accuracy=5e-5, reward_type="2018", binary_action=False):
+    def __init__(self, action_repeat, integrator_accuracy=5e-5, reward_type="2018"):
         self.env = ProstheticsEnv(visualize=False)
         self.env.integrator_accuracy = integrator_accuracy
         self.action_repeat = action_repeat
-        self.binary_action = binary_action
         # self.observation_space = self.env.observation_space
         # custom observation space
         self.observation_space = Box(low=-3, high=+3, shape=(CUSTOM_OBSERVATION_SPACE,), dtype=np.float32)
@@ -26,11 +25,7 @@ class CustomEnv(ProstheticsEnv):
     def step(self, action):
         cumulative_reward = 0.0
 
-        if self.binary_action:
-            for i in range(len(action)):
-                action[i] = 1.0 if action[i] > 0.5 else 0.0
-        else:
-            action = np.clip(action, 0.0, 1.0)
+        action = np.clip(action, 0.0, 1.0)
 
         for _ in range(self.action_repeat):
             observation, reward, done, info = self.env.step(action, project=False)
@@ -49,8 +44,6 @@ class CustomEnv(ProstheticsEnv):
                 survival = 0.05
                 # shaped reward
                 reward = reward * 0.05 + min(translation * 10, 0.3) + survival
-            elif self.reward_type == "hopper":
-                reward = observation["body_vel"]["pelvis"][0] + 0.02
             else:
                 assert False, 'unknown reward type...'
 

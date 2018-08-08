@@ -23,7 +23,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="RLlib version AI for Prosthetics Challenge")
     # hyperparameters
     parser.add_argument("--action-repeat", default=1, type=int, help="repeat time for each action")
-    parser.add_argument("--binary-action", default=False, action="store_true", help="action can only be 0 or 1")
     # checkpoint
     parser.add_argument("--checkpoint-dir", default="output", type=str, help="checkpoint output directory")
     parser.add_argument("--checkpoint-id", default=None, type=str, help="id of checkpoint file")
@@ -40,7 +39,6 @@ if __name__ == "__main__":
     evaluator = Evaluator(
         args.action_repeat, 
         render=True if args.no_render is False else False, 
-        binary_action=args.binary_action
     )
 
     agent = ppo.PPOAgent(env="CustomEnv", config=config)

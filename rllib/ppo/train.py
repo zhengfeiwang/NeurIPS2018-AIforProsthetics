@@ -20,8 +20,7 @@ def env_creator(env_config):
     from custom_env import CustomEnv
     env = CustomEnv(action_repeat=args.action_repeat, 
                     integrator_accuracy=args.integrator_accuracy,
-                    reward_type=args.reward_type,
-                    binary_action=args.binary_action)
+                    reward_type=args.reward_type)
     return env
 
 
@@ -63,7 +62,6 @@ if __name__ == "__main__":
     parser.add_argument("--batch-size", default=128, type=int, help="minibatch size")
     parser.add_argument("--stepsize", default=5e-5, type=float, help="stepsize for optimization")
     parser.add_argument("--action-repeat", default=1, type=int, help="repeat time for each action")
-    parser.add_argument("--binary-action", default=False, action="store_true", help="action can only be 0 or 1")
     parser.add_argument("--reward-type", default="2018", type=str, help="reward type")
     # environment
     parser.add_argument("--integrator-accuracy", default=5e-5, type=float, help="simulator integrator accuracy")
@@ -103,7 +101,7 @@ if __name__ == "__main__":
         os.mkdir(args.checkpoint_dir)
     
     # initialize evaluator
-    evaluator = Evaluator(action_repeat=args.action_repeat, binary_action=args.binary_action)
+    evaluator = Evaluator(action_repeat=args.action_repeat)
 
     # tensorboard for validation reward
     timestamp = time.time()
