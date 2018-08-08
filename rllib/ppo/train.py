@@ -31,7 +31,7 @@ def configure(args):
     config["gamma"] = args.gamma
     config["horizon"] = MAX_STEPS_PER_EPISODE // args.action_repeat
     config["num_workers"] = args.num_workers
-    config["sample_batch_size"] = args.timesteps_per_batch // (args.num_workers * 2)
+    config["sample_batch_size"] = args.timesteps_per_batch // args.num_workers
     config["batch_mode"] = "truncate_episodes"
     config["model"]["squash_to_range"] = True # action clip
 
@@ -87,12 +87,15 @@ if __name__ == "__main__":
     logger.debug('random seed: {}'.format(seed))
 
     if args.cluster is True:
+        logger.debug('using cluster...')
         ray.init(redis_address=args.redis_address)
     else:
         ray.init(num_cpus=args.num_cpus)
+        logger.debug('using local machine...')
 
     register_env("CustomEnv", env_creator)
     config = configure(args)
+    logger.info("agent configuration: {}".format(config))
 
     agent = ppo.PPOAgent(env="CustomEnv", config=config)
 

@@ -2,7 +2,7 @@
 python train.py \
 --seed=60730 \
 --validation-interval=2 --checkpoint-interval=5 \
---num-cpus=48 --num-workers=48 \
+--cluster --num-workers=120 \
 --gpu --num-gpus=4 \
 --integrator-accuracy=1e-3 \
 --action-repeat=5 \
