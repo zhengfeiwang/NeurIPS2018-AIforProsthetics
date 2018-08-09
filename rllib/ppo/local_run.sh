@@ -2,7 +2,7 @@
 python main.py \
 --frameskip=5 --accuracy=1e-3 \
 --num-workers=16 --num-cpus=16 \
---num-gpus=8
+--num-gpus=8 \
 --sample=1024 \
 --reward=shaped \
 --epochs=10 --hiddens=256-256 --activations=relu \
