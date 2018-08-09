@@ -4,13 +4,12 @@ from utils import process_observation
 
 
 class Evaluator(object):
-    def __init__(self, action_repeat, render=False):
+    def __init__(self, frameskip, episode_length=300, render=False):
         self.env = ProstheticsEnv(visualize=render)
-        self.action_repeat = action_repeat
-        self.episode_length_max = 300 // self.action_repeat
+        self.frameskip = frameskip
+        self.episode_length = episode_length
 
-    def __call__(self, agent, debug=False):
-        # the environment is deterministic, so only need to evaluate once
+    def __call__(self, agent, check):
         episode_reward = 0.0
         episode_steps = 0
 
@@ -18,32 +17,27 @@ class Evaluator(object):
         observation = process_observation(observation)
 
         done = False
-
-        while not done and episode_steps <= self.episode_length_max:
-            # compute action
+        while not done and episode_steps < self.episode_length:
             action = agent.compute_action(observation)
             action = np.clip(action, 0.0, 1.0)
 
-            for _ in range(self.action_repeat):
+            for _ in range(self.frameskip):
                 observation, reward, done, _ = self.env.step(action, project=False)
                 episode_steps += 1
                 episode_reward += reward
 
-                # debug mode, log out useful information
-                if debug:
+                if check:
                     print("action: {}".format(action))
                     print("step #{}:".format(episode_steps))
                     print("pelvis")
                     print(" - height: {}".format(observation["body_pos"]["pelvis"][1]))
                     print(" - velocity: {}".format(observation["body_vel"]["pelvis"]))
                     print("environment reward: {}".format(reward))
-
                 if done:
                     break
-            
-            # transform dictionary to 1D vector
+
             observation = process_observation(observation)
-        
+
         return episode_reward, episode_steps
     
     def close(self):

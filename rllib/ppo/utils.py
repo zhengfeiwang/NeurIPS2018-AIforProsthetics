@@ -1,3 +1,6 @@
+OBSERVATION_DIM = 85
+
+
 def process_observation(observation):
     # custom observation space 44 + 3 + 17 + 17 + 4 = 85D
     res = []
