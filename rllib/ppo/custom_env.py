@@ -36,6 +36,9 @@ class CustomEnv(ProstheticsEnv):
                 joint = sum([max(0, knee - 0.1) for knee in [observation["joint_pos"]["knee_l"][0], observation["joint_pos"]["knee_r"][0]]]) * 0.03
                 penalty = lean + joint
                 reward = 0.02 * reward + survival - penalty
+            elif self.reward_type == "standing":
+                survival = 1.0 // self.frameskip
+                reward = survival
 
             cumulative_reward += reward
             if done or self.episode_steps >= self.episode_length:

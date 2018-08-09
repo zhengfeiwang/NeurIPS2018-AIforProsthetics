@@ -4,7 +4,7 @@ python main.py \
 --num-workers=16 --num-cpus=16 \
 --num-gpus=8 \
 --sample=1024 \
---reward=shaped \
+--reward=standing \
 --epochs=10 --hiddens=256-256 --activations=relu \
 --batch-size=256 --learning-rate=0.0001 \
 --seed=60730 \
