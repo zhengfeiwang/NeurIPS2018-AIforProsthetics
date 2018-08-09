@@ -37,7 +37,7 @@ class CustomEnv(ProstheticsEnv):
                 penalty = lean + joint
                 reward = 0.02 * reward + survival - penalty
             elif self.reward_type == "standing":
-                survival = 1.0 // self.frameskip
+                survival = 1.0 / self.frameskip
                 reward = survival
 
             cumulative_reward += reward

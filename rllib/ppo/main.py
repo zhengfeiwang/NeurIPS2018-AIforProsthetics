@@ -16,8 +16,9 @@ from utils import OBSERVATION_DIM
 
 def env_creator(env_config):
     from custom_env import CustomEnv
-    env = CustomEnv(frameskip=args.frameskip, 
+    env = CustomEnv(episode_length=args.episode_length, 
                     dim=OBSERVATION_DIM, 
+                    frameskip=args.frameskip, 
                     integrator_accuracy=args.accuracy,
                     reward_type=args.reward)
     return env
@@ -25,14 +26,13 @@ def env_creator(env_config):
 
 def configure(args):
     config = ppo.DEFAULT_CONFIG.copy()
-
     # common configs
     config["gamma"] = args.gamma
     config["horizon"] = args.episode_length // args.frameskip
     config["num_workers"] = args.num_workers
-    config["sample_batch_size"] = args.sample // args.num_workers
+    config["sample_batch_size"] = args.sample_batch
     config["batch_mode"] = "truncate_episodes"
-    
+
     # model configs
     hiddens = []
     hidden_layers = args.hiddens.split('-')
@@ -65,6 +65,7 @@ if __name__ == "__main__":
     parser.add_argument("--cluster", default=False, action="store_true", help="whether use cluster or local computer")
     parser.add_argument("--redis-address", default="192.168.1.137:16379", type=str, help="address of the Redis server")
     parser.add_argument("--sample", default=4000, type=int, help="number of samples per iteration")
+    parser.add_argument("--sample-batch", default=200, type=int, help="sample batch size")
     # train setting
     parser.add_argument("--seed", default=-1, type=int, help="random seed")
     parser.add_argument("--gpu", default=False, action="store_true", help="use GPU for optimization")
@@ -135,7 +136,7 @@ if __name__ == "__main__":
         logger.info('running on local machine, # workers = {}, # cpus = {}'.format(args.num_workers, args.num_cpus))
     logger.info('# gpus = {}'.format(args.num_gpus))
     logger.info('# training iterations = {}'.format(args.iterations))
-    logger.info('# samples per iteration = {}'.format(args.sample))
+    logger.info('# samples per iteration = {}, sample batch size = {}'.format(args.sample, args.sample_batch))
     logger.info('random seed: {}'.format(args.seed))
     logger.info('validation interval: {}, checkpoint interval: {}'.format(args.validation_interval, args.checkpoint_interval))
     logger.info('<--- Environment --->')
