@@ -1,12 +1,11 @@
 #!/bin/bash
-python train.py \
+python main.py \
+--frameskip=5 --accuracy=1e-3 \
+--num-workers=16 --num-cpus=16 \
+--num-gpus=8
+--sample=1024 \
+--reward=shaped \
+--epochs=10 --hiddens=256-256 --activations=relu \
+--batch-size=256 --learning-rate=0.0001 \
 --seed=60730 \
---validation-interval=2 --checkpoint-interval=5 \
---num-cpus=16 --num-workers=16 \
---gpu --num-gpus=8 \
---accuracy=1e-3 \
---action-repeat=5 \
---reward-type=shaped \
---gamma=0.995 --kl-coeff=1.0 \
---timesteps-per-batch=1024 \
---epoch=10 --batch-size=256 ----learning-rate=0.0001
+--iterations=10000 --checkpoint-interval=50 --validation-interval=1
