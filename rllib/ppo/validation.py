@@ -15,14 +15,14 @@ logger = logging.getLogger(__name__)
 
 def env_creator(env_config):
     from custom_env import CustomEnv
-    env = CustomEnv(action_repeat=args.action_repeat)
+    env = CustomEnv(frameskip=args.frameskip)
     return env
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="RLlib version AI for Prosthetics Challenge")
     # hyperparameters
-    parser.add_argument("--action-repeat", default=1, type=int, help="repeat time for each action")
+    parser.add_argument("--frameskip", default=1, type=int, help="repeat time for each action")
     # checkpoint
     parser.add_argument("--checkpoint-dir", default="output", type=str, help="checkpoint output directory")
     parser.add_argument("--checkpoint-id", default=None, type=str, help="id of checkpoint file")
