@@ -6,6 +6,7 @@ python main.py \
 --num-gpus=4 \
 --sample=1024  --sample-batch=16 \
 --reward=shaped \
+--gamma=0.999 \
 --epochs=10 --hiddens=256-256 --activations=relu \
 --batch-size=256 --learning-rate=5e-5 \
 --seed=60730 \
