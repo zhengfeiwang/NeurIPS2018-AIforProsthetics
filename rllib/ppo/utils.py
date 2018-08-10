@@ -1,42 +1,38 @@
-OBSERVATION_DIM = 85
+OBSERVATION_DIM = 194
 
-
-def process_observation(observation):
-    # custom observation space 44 + 3 + 17 + 17 + 4 = 85D
+# referenced from official repo
+def process_observation(state_desc):
     res = []
+    pelvis = None
 
-    BODY_PARTS = ['femur_r', 'pros_tibia_r', 'pros_foot_r', 'femur_l', 'tibia_l', 'talus_l', 'calcn_l', 'toes_l', 'torso', 'head']
-    JOINTS = ['ground_pelvis', 'hip_r', 'knee_r', 'ankle_r', 'hip_l', 'knee_l', 'ankle_l', 'back']
-        
-    # body parts positions relative to pelvis - (3 + 1) + (3 + 1) * 10 = 44D
-    # pelvis relative position
-    res += [0.0, 0.0, 0.0]
-    res += [observation["body_pos"]["pelvis"][1]]   # absolute pelvis.y
-    pelvis_pos = observation["body_pos"]["pelvis"]
-    for body_part in BODY_PARTS:
-        # x, y, z - axis
-        for axis in range(3):
-            res += [observation["body_pos"][body_part][axis] - pelvis_pos[axis]]
-        res += [observation["body_pos"][body_part][1]] # absolute height
+    for body_part in ['pelvis', 'head', 'torso', 'femur_l', 'femur_r', 'calcn_l', 'tibia_l', 'toes_l', 'talus_l', 'pros_foot_r', 'pros_tibia_r']:
+        cur = []
+        cur += state_desc["body_pos"][body_part][0:2]
+        cur += state_desc["body_vel"][body_part][0:2]
+        cur += state_desc["body_acc"][body_part][0:2]
+        cur += state_desc["body_pos_rot"][body_part][2:]
+        cur += state_desc["body_vel_rot"][body_part][2:]
+        cur += state_desc["body_acc_rot"][body_part][2:]
+        if body_part == "pelvis":
+            pelvis = cur
+            res += cur[1:]
+        else:
+            cur_upd = cur
+            cur_upd[:2] = [cur[i] - pelvis[i] for i in range(2)]
+            cur_upd[6:7] = [cur[i] - pelvis[i] for i in range(6,7)]
+            res += cur_upd
 
-    # pelvis velocity - 3D
-    pelvis_vel = observation["body_vel"]["pelvis"]
-    res += pelvis_vel
-        
-    # joints absolute angle - 6 + 3 + 1 + 1 + 3 + 1 + 1 + 1 = 17D
-    for joint in JOINTS:
-        for i in range(len(observation["joint_pos"][joint])):
-            res += [observation["joint_pos"][joint][i]]
-        
-    # joints absolute angular velocity - 6 + 3 + 1 + 1 + 3 + 1 + 1 + 1 = 17D
-    for joint in JOINTS:
-        for i in range(len(observation["joint_vel"][joint])):
-            res += [observation["joint_vel"][joint][i]]
-        
-    # center of mass position and velocity - 2 + 2 = 4D
-    for axis in range(2):
-        res += [observation["misc"]["mass_center_pos"][axis] - pelvis_pos[axis]]
-    for axis in range(2):
-        res += [observation["misc"]["mass_center_vel"][axis] - pelvis_vel[axis]]
-            
+    for joint in ["ankle_l","ankle_r","back","hip_l","hip_r","knee_l","knee_r"]:
+        res += state_desc["joint_pos"][joint]
+        res += state_desc["joint_vel"][joint]
+        res += state_desc["joint_acc"][joint]
+
+    for muscle in ['abd_r', 'add_r', 'hamstrings_r', 'bifemsh_r', 'glut_max_r', 'iliopsoas_r', 'rect_fem_r', 'vasti_r', 'abd_l', 'add_l', 'hamstrings_l', 'bifemsh_l', 'glut_max_l', 'iliopsoas_l', 'rect_fem_l', 'vasti_l', 'gastroc_l', 'soleus_l', 'tib_ant_l']:
+        res += [state_desc["muscles"][muscle]["activation"]]
+        res += [state_desc["muscles"][muscle]["fiber_length"]]
+        res += [state_desc["muscles"][muscle]["fiber_velocity"]]
+
+    cm_pos = [state_desc["misc"]["mass_center_pos"][i] - pelvis[i] for i in range(2)]
+    res = res + cm_pos + state_desc["misc"]["mass_center_vel"] + state_desc["misc"]["mass_center_acc"]
+
     return res
