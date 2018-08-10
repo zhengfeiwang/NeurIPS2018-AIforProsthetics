@@ -30,7 +30,7 @@ def configure(args):
     config["gamma"] = args.gamma
     config["horizon"] = args.episode_length // args.frameskip
     config["num_workers"] = args.num_workers
-    config["sample_batch_size"] = args.sample_batch
+    config["sample_batch_size"] = max(args.sample_batch, args.sample // args.num_workers)
     config["batch_mode"] = "truncate_episodes"
 
     # model configs
@@ -118,7 +118,7 @@ if __name__ == "__main__":
     logger.setLevel(logging.DEBUG)
     handler = logging.FileHandler(os.path.join(args.checkpoint_dir, timestamp + '.log'))
     handler.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s, %(name)s, %(levelname)s, %(message)s')
+    formatter = logging.Formatter('%(asctime)s, %(levelname)s, %(message)s')
     handler.setFormatter(formatter)
     console = logging.StreamHandler()
     console.setLevel(logging.INFO)
@@ -136,7 +136,7 @@ if __name__ == "__main__":
         logger.info('running on local machine, # workers = {}, # cpus = {}'.format(args.num_workers, args.num_cpus))
     logger.info('# gpus = {}'.format(args.num_gpus))
     logger.info('# training iterations = {}'.format(args.iterations))
-    logger.info('# samples per iteration = {}, sample batch size = {}'.format(args.sample, args.sample_batch))
+    logger.info('# samples per iteration = {}, sample batch size = {}'.format(args.sample, max(args.sample_batch, args.sample // args.num_workers)))
     logger.info('random seed: {}'.format(args.seed))
     logger.info('validation interval: {}, checkpoint interval: {}'.format(args.validation_interval, args.checkpoint_interval))
     logger.info('<--- Environment --->')
@@ -147,6 +147,8 @@ if __name__ == "__main__":
     logger.info('gamma = {}, KL divergence = {}'.format(args.gamma, args.kl_coeff))
     logger.info('learning rate = {}, batch size = {}, # epochs = {}'.format(args.learning_rate, args.batch_size, args.epochs))
     logger.info('network architecture: {}, activation: {}'.format(args.hiddens, args.activations))
+    logger.debug('RLlib agent config:')
+    logger.debug(config)
     logger.info('<------------------------------>')
 
     train(agent, evaluator, logger, writer, args)
