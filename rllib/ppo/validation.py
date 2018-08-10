@@ -37,7 +37,7 @@ if __name__ == "__main__":
     config = ppo.DEFAULT_CONFIG.copy()
 
     evaluator = Evaluator(
-        args.action_repeat, 
+        args.frameskip, 
         render=True if args.no_render is False else False, 
     )
 
