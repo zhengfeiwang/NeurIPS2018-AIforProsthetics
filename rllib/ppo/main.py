@@ -73,6 +73,8 @@ if __name__ == "__main__":
     parser.add_argument("--checkpoint-dir", default="output", type=str, help="checkpoint output directory")
     parser.add_argument("--checkpoint-interval", default=5, type=int, help="iteration interval for checkpoint")
     parser.add_argument("--validation-interval", default=5, type=int, help="iteration interval for validation")
+    parser.add_argument("--resume", default=False, action="store_true", help="resume to previous training")
+    parser.add_argument("--resume-id", default=None, type=int, help="checkpoint id for training resume")
     # environment
     parser.add_argument("--reward", default="2018", type=str, help="reward type")
     parser.add_argument("--frameskip", default=1, type=int, help="number of frames to skip")
@@ -108,6 +110,11 @@ if __name__ == "__main__":
     # verify checkpoint directory
     if not os.path.exists(args.checkpoint_dir):
         os.mkdir(args.checkpoint_dir)
+    
+    # resume training
+    if args.resume and args.resume_id is not None:
+        checkpoint_path = os.path.join(args.checkpoint_dir, 'checkpoint-' + str(args.resume_id))
+    agent.restore(checkpoint_path=checkpoint_path)
 
     # summary file
     timestruct = time.localtime(start_time)
@@ -149,6 +156,8 @@ if __name__ == "__main__":
     logger.info('network architecture: {}, activation: {}'.format(args.hiddens, args.activations))
     logger.debug('RLlib agent config:')
     logger.debug(config)
+    if args.resume and args.resume_id is not None:
+        logger.debug('resume previous training, checkpoint id is {}'.format(args.resume_id))
     logger.info('<------------------------------>')
 
     train(agent, evaluator, logger, writer, args)

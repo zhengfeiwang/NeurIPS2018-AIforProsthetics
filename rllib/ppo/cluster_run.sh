@@ -1,7 +1,7 @@
 #!/bin/bash
 python main.py \
 --frameskip=5 --accuracy=1e-3 \
---num-workers=80 --num-cpus=80 \
+--num-workers=120 --num-cpus=120 \
 --cluster \
 --num-gpus=4 \
 --sample=1024  --sample-batch=16 \
