@@ -63,7 +63,7 @@ if __name__ == "__main__":
     parser.add_argument("--num-cpus", default=1, type=int, help="number of local cpus")
     parser.add_argument("--num-gpus", default=None, type=int, help="number of gpus")
     parser.add_argument("--cluster", default=False, action="store_true", help="whether use cluster or local computer")
-    parser.add_argument("--redis-address", default="192.168.1.137:16379", type=str, help="address of the Redis server")
+    parser.add_argument("--redis-address", default="192.168.1.137:16381", type=str, help="address of the Redis server")
     parser.add_argument("--sample", default=4000, type=int, help="number of samples per iteration")
     parser.add_argument("--sample-batch", default=200, type=int, help="sample batch size")
     # train setting
