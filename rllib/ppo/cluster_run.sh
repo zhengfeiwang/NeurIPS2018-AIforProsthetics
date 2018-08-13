@@ -4,10 +4,10 @@ python main.py \
 --num-workers=120 --num-cpus=120 \
 --cluster \
 --num-gpus=4 \
---sample=1024  --sample-batch=16 \
+--sample=1024  --sample-batch=10 \
 --reward=shaped \
---gamma=0.999 \
+--gamma=0.997 \
 --epochs=10 --hiddens=256-256 --activations=relu \
---batch-size=256 --learning-rate=5e-5 \
+--batch-size=256 --learning-rate=1e-5 \
 --seed=60730 \
---iterations=100 --checkpoint-interval=10 --validation-interval=1
+--iterations=100 --checkpoint-interval=5 --validation-interval=1

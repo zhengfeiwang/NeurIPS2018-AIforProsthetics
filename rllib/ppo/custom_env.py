@@ -31,11 +31,10 @@ class CustomEnv(ProstheticsEnv):
                 reward = observation["body_pos"]["pelvis"][0] - self.prev_pelvis_pos
                 self.prev_pelvis_pos = observation["body_pos"]["pelvis"][0]
             elif self.reward_type == "shaped":
-                survival = 0.01
-                lean = min(0.3, max(0, observation["body_pos"]["pelvis"][0] - observation["body_pos"]["head"][0] - 0.15)) * 0.05
-                joint = sum([max(0, knee - 0.1) for knee in [observation["joint_pos"]["knee_l"][0], observation["joint_pos"]["knee_r"][0]]]) * 0.03
-                penalty = lean + joint
-                reward = 0.02 * reward + survival - penalty
+                survival = 0.02
+                reward = 0.1 * reward + survival
+                if observation["body_pos"]["pelvis"][1] < 0.8:
+                    done = True # dangerous pelvis.y
             elif self.reward_type == "standing":
                 survival = 1.0 / self.frameskip
                 reward = survival
