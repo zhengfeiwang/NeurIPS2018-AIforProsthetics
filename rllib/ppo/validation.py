@@ -7,6 +7,7 @@ import ray
 import ray.rllib.agents.ppo as ppo
 from ray.tune.registry import register_env
 from evaluator import Evaluator
+from utils import OBSERVATION_DIM
 
 MAX_STEPS_PER_ITERATION = 300
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(message)s')
@@ -15,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 def env_creator(env_config):
     from custom_env import CustomEnv
-    env = CustomEnv(frameskip=args.frameskip)
+    env = CustomEnv(frameskip=args.frameskip, dim=OBSERVATION_DIM)
     return env
 
 
@@ -36,6 +37,10 @@ if __name__ == "__main__":
     register_env("CustomEnv", env_creator)
     config = ppo.DEFAULT_CONFIG.copy()
 
+    config["model"]["fcnet_hiddens"] = [256, 256]
+    config["model"]["fcnet_activation"] = "relu"
+    config["model"]["squash_to_range"] = True
+
     evaluator = Evaluator(
         args.frameskip, 
         render=True if args.no_render is False else False, 
@@ -45,7 +50,7 @@ if __name__ == "__main__":
     checkpoint_path = os.path.join(args.checkpoint_dir, "checkpoint-" + str(args.checkpoint_id))
     agent.restore(checkpoint_path=checkpoint_path)
 
-    evaluation_reward, evaluation_steps = evaluator(agent, debug=args.debug)
+    evaluation_reward, evaluation_steps = evaluator(agent, check=args.debug)
     logger.info('score: {}'.format(evaluation_reward))
     logger.info('episode length: {}'.format(evaluation_steps))
 
