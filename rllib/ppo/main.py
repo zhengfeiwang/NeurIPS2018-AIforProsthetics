@@ -114,7 +114,7 @@ if __name__ == "__main__":
     # resume training
     if args.resume and args.resume_id is not None:
         checkpoint_path = os.path.join(args.checkpoint_dir, 'checkpoint-' + str(args.resume_id))
-    agent.restore(checkpoint_path=checkpoint_path)
+        agent.restore(checkpoint_path=checkpoint_path)
 
     # summary file
     timestruct = time.localtime(start_time)
