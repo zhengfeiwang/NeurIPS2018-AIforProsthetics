@@ -67,3 +67,6 @@ class CustomEnv(ProstheticsEnv):
         self.prev_pelvis_pos = 0.0
         self.episode_steps = 0
         return process_observation(observation)
+    
+    def close(self):
+        self.env.close()
