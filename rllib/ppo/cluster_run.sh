@@ -3,7 +3,7 @@ python main.py \
 --frameskip=5 --accuracy=1e-3 \
 --num-workers=120 --num-cpus=120 \
 --cluster \
---num-gpus=4 \
+--gpu --num-gpus=4 \
 --sample=1024  --sample-batch=10 \
 --reward=shaped \
 --gamma=0.997 \
