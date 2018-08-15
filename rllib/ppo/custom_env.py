@@ -35,6 +35,15 @@ class CustomEnv(ProstheticsEnv):
                     reward = -1
                 else:
                     reward = 0.02 * reward + 0.15
+            elif self.reward_type == "velocity":
+                pelvis_velocity = observation["body_vel"]["pelvis"][0]
+                survival = 0.01
+                lean = min(0, observation["body_pos"]["head"][0] - observation["body_pos"]["pelvis"][0]) * 0.1
+                joint = sum([max(0, knee - 0.1) for knee in [observation["joint_pos"]["knee_l"][0], observation["joint_pos"]["knee_r"][0]]]) * 0.02
+                reward = pelvis_velocity * 0.01 + survival + lean - joint
+                # pelvis too low
+                if observation["body_pos"]["pelvis"][1] < 0.65:
+                    reward -= 2 * survival
             elif self.reward_type == "standing":
                 survival = 1.0 / self.frameskip
                 reward = survival
@@ -45,7 +54,8 @@ class CustomEnv(ProstheticsEnv):
         # transform dictionary to 1D vector
         observation = process_observation(observation)
         # clip reward
-        clip_reward = np.clip(cumulative_reward, -1.0, 1.0)
+        # clip_reward = np.clip(cumulative_reward, -1.0, 1.0)
+        clip_reward = cumulative_reward
         return observation, clip_reward, done, info
 
     def reset(self):
