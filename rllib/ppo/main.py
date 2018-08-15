@@ -45,7 +45,7 @@ def configure(args):
     # PPO specific
     config["kl_coeff"] = args.kl_coeff
     config["timesteps_per_batch"] = args.sample
-    config["num_sgd_iter"] = args.epochs * (args.sample // args.batch_size)
+    config["num_sgd_iter"] = args.epochs
     config["sgd_stepsize"] = args.learning_rate
     config["sgd_batchsize"] = args.batch_size
     if args.gpu is True and args.num_gpus is not None:
