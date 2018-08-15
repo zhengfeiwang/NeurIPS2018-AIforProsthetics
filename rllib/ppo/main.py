@@ -51,9 +51,6 @@ def configure(args):
     if args.gpu is True and args.num_gpus is not None:
         config["num_gpus"] = args.num_gpus
     
-    # LSTM options
-    config["model"]["use_lstm"] = True if args.lstm is True else False
-    
     return config
 
 
@@ -84,7 +81,6 @@ if __name__ == "__main__":
     parser.add_argument("--accuracy", default=5e-5, type=float, help="simulator integrator accuracy")
     parser.add_argument("--episode-length", default=300, type=int, help="max length for episode")
     # hyperparameters
-    parser.add_argument("--lstm", default=False, action="store_true", help="use LSTM model")
     parser.add_argument("--epochs", default=30, type=int, help="number of training epochs")
     parser.add_argument("--batch-size", default=128, type=int, help="minibatch size")
     parser.add_argument("--learning-rate", default=5e-5, type=float, help="stepsize for optimization")
@@ -158,8 +154,6 @@ if __name__ == "__main__":
     logger.info('gamma = {}, KL divergence = {}'.format(args.gamma, args.kl_coeff))
     logger.info('learning rate = {}, batch size = {}, # epochs = {}'.format(args.learning_rate, args.batch_size, args.epochs))
     logger.info('network architecture: {}, activation: {}'.format(args.hiddens, args.activations))
-    if args.lstm is True:
-        logger.info('use LSTM model')
     logger.debug('RLlib agent config:')
     logger.debug(config)
     if args.resume and args.resume_id is not None:
