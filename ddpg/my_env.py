@@ -3,52 +3,44 @@ from gym.spaces import Box
 from osim.env import ProstheticsEnv
 
 ACTION_SPACE = 19
-MY_OBSERVATION_SPACE = 72   # may change due to the observation processing method
+MY_OBSERVATION_SPACE = 194
 
 
-def observation_process(observation):
-    # observation processing, output dimension is 72D
+# referenced from official repo
+def observation_process(state_desc):
     res = []
-    BODY_PARTS = [
-        'femur_r', 'pros_tibia_r', 'pros_foot_r', 
-        'femur_l', 'tibia_l', 'talus_l', 'calcn_l', 'toes_l', 
-        'torso', 'head'
-    ]
-    JOINTS = [
-        'ground_pelvis', 
-        'hip_r', 'knee_r', 'ankle_r', 
-        'hip_l', 'knee_l', 'ankle_l', 
-        'back'
-    ]
-    
-    # body parts positions relative to pelvis - 31D
-    res += [observation['body_pos']['pelvis'][1]]   # absolute pelvis.y
-    pelvis_pos = observation['body_pos']['pelvis']
-    for body_part in BODY_PARTS:
-        # x, y, z - axis
-        for axis in range(3):
-            res += [observation['body_pos'][body_part][axis] - pelvis_pos[axis]]
+    pelvis = None
 
-    # pelvis velocity - 3D
-    pelvis_vel = observation['body_vel']['pelvis']
-    res += pelvis_vel
-        
-    # joints absolute angle - 17D
-    for joint in JOINTS:
-        for i in range(len(observation['joint_pos'][joint])):
-            res += [observation['joint_pos'][joint][i]]
-        
-    # joints absolute angular velocity - 17D
-    for joint in JOINTS:
-        for i in range(len(observation['joint_vel'][joint])):
-            res += [observation['joint_vel'][joint][i]]
-        
-    # center of mass position and velocity - 4D
-    for axis in range(2):
-        res += [observation['misc']['mass_center_pos'][axis] - pelvis_pos[axis]]
-    for axis in range(2):
-        res += [observation['misc']['mass_center_vel'][axis] - pelvis_vel[axis]]
-            
+    for body_part in ['pelvis', 'head', 'torso', 'femur_l', 'femur_r', 'calcn_l', 'tibia_l', 'toes_l', 'talus_l', 'pros_foot_r', 'pros_tibia_r']:
+        cur = []
+        cur += state_desc["body_pos"][body_part][0:2]
+        cur += state_desc["body_vel"][body_part][0:2]
+        cur += state_desc["body_acc"][body_part][0:2]
+        cur += state_desc["body_pos_rot"][body_part][2:]
+        cur += state_desc["body_vel_rot"][body_part][2:]
+        cur += state_desc["body_acc_rot"][body_part][2:]
+        if body_part == "pelvis":
+            pelvis = cur
+            res += cur[1:]
+        else:
+            cur_upd = cur
+            cur_upd[:2] = [cur[i] - pelvis[i] for i in range(2)]
+            cur_upd[6:7] = [cur[i] - pelvis[i] for i in range(6,7)]
+            res += cur_upd
+
+    for joint in ["ankle_l","ankle_r","back","hip_l","hip_r","knee_l","knee_r"]:
+        res += state_desc["joint_pos"][joint]
+        res += state_desc["joint_vel"][joint]
+        res += state_desc["joint_acc"][joint]
+
+    for muscle in ['abd_r', 'add_r', 'hamstrings_r', 'bifemsh_r', 'glut_max_r', 'iliopsoas_r', 'rect_fem_r', 'vasti_r', 'abd_l', 'add_l', 'hamstrings_l', 'bifemsh_l', 'glut_max_l', 'iliopsoas_l', 'rect_fem_l', 'vasti_l', 'gastroc_l', 'soleus_l', 'tib_ant_l']:
+        res += [state_desc["muscles"][muscle]["activation"]]
+        res += [state_desc["muscles"][muscle]["fiber_length"]]
+        res += [state_desc["muscles"][muscle]["fiber_velocity"]]
+
+    cm_pos = [state_desc["misc"]["mass_center_pos"][i] - pelvis[i] for i in range(2)]
+    res = res + cm_pos + state_desc["misc"]["mass_center_vel"] + state_desc["misc"]["mass_center_acc"]
+
     return res
 
 
@@ -70,6 +62,16 @@ class MyEnv:
 
             if self.reward_type == '2018':
                 reward += r
+            elif self.reward_type == 'shaped':
+                pelvis_velocity = obs["body_vel"]["pelvis"][0]
+                survival = 0.01
+                lean = min(0, obs["body_pos"]["head"][0] - obs["body_pos"]["pelvis"][0]) * 0.1
+                joint = sum([max(0, knee - 0.1) for knee in [obs["joint_pos"]["knee_l"][0], obs["joint_pos"]["knee_r"][0]]]) * 0.02
+                reward = pelvis_velocity * 0.01 + survival + lean - joint
+                # pelvis too low
+                if obs["body_pos"]["pelvis"][1] < 0.75:
+                    reward -= 2 * survival
+
             else:
                 assert False, 'undefined reward type...'
 

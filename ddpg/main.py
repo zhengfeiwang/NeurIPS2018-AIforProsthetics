@@ -5,7 +5,6 @@ import argparse
 import logging
 import numpy as np
 import torch
-import gym
 from tensorboardX import SummaryWriter
 from ddpg import DDPG
 from train import train
