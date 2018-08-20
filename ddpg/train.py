@@ -1,13 +1,11 @@
 import time
-import multiprocessing
 import threading
-from threading import Lock
 import numpy as np
 from evaluator import Evaluator
 from my_env import MyEnv
 
 # sample function, for multi thread
-def sample(agent, writer, logger, episode, lock, args):
+def sample(agent, logger, episode, lock, args):
     env = MyEnv(accuracy=args.accuracy, action_repeat=args.action_repeat, reward_type=args.reward_type)
     max_episode_length = args.max_episode_length // args.action_repeat
 
@@ -19,12 +17,12 @@ def sample(agent, writer, logger, episode, lock, args):
     done = False
     while not done and episode_steps < max_episode_length:
         # obtain an action
+        lock.acquire()
         if episode < args.warmup_episodes and args.resume is False:
             action = agent.random_action()
         else:
-            lock.acquire()
             action = agent.select_action(observation)
-            lock.release()
+        lock.release()
         
         episode_steps += 1
         observation, reward, done = env.step(action)
@@ -37,63 +35,59 @@ def sample(agent, writer, logger, episode, lock, args):
     
     env.close()
 
-    # summary and logger
     lock.acquire()
-    writer.add_scalar('sample/episode_reward', episode_reward, episode)
-    writer.add_scalar('sample/episode_length', episode_steps, episode)
     logger.debug('[sample] episode #{}: reward = {}, length = {}'.format(episode, episode_reward, episode_steps))
     lock.release()
 
 
 def train(agent, writer, logger, args):
     num_workers = args.num_workers
-    lock = Lock()
+    lock = threading.Lock()
 
     log = iteration = episode = 0
     checkpoint_num = 0 if args.resume is False else args.resume_num
     
     evaluator = Evaluator(args)
 
-    logger.debug('----------------- random sampling -----------------')
+    # random sampling phase
     if args.resume is False:
         while episode < args.warmup_episodes:
             threads = []
             for _ in range(num_workers):
-                thread = threading.Thread(target=sample, args=(agent, writer, logger, episode, lock, args,))
+                thread = threading.Thread(target=sample, args=(agent, logger, episode, lock, args,))
                 thread.setDaemon(True)
                 threads.append(thread)
                 episode += 1
                 if episode >= args.warmup_episodes:
                     break
-
+            
             for thread in threads:
                 thread.start()
             for thread in threads:
                 thread.join()
             
             writer.add_scalar('sample/replay_buffer_size', agent.memory.size(), episode)
-            logger.debug('[warmup] replay buffer size: {}'.format(agent.memory.size()))
-    logger.debug('------------------ warmup finish ------------------')
-    logger.info('warmup finish, replay buffer size: {}'.format(agent.memory.size()))
+            logger.debug('[sample] replay buffer size: {}'.format(agent.memory.size()))
 
-    logger.debug('--------------- training iterations ---------------')
+    logger.info('warmup phase finish, replay buffer size: {}'.format(agent.memory.size()))
+
+    # training phase
     while iteration < args.nb_iterations:
         logger.debug('<----- iterations #{} ----->'.format(iteration))
         threads = []
         for _ in range(num_workers):
-            thread = threading.Thread(target=sample, args=(agent, writer, logger, episode, lock, args,))
+            thread = threading.Thread(target=sample, args=(agent, logger, episode, lock, args,))
             thread.setDaemon(True)
             threads.append(thread)
             episode += 1
 
         for thread in threads:
             thread.start()
-            
         for thread in threads:
             thread.join()
 
         writer.add_scalar('sample/replay_buffer_size', agent.memory.size(), episode)
-        logger.debug('[training] replay buffer size: {}'.format(agent.memory.size()))
+        logger.debug('[sample] replay buffer size: {}'.format(agent.memory.size()))
 
         for _ in range(args.nb_train_epochs):
             Q, critic_loss, critic_output = agent.update_policy()

@@ -56,7 +56,7 @@ if __name__ == "__main__":
     logger.setLevel(logging.DEBUG)
     handler = logging.FileHandler(os.path.join(args.output, timestamp + '.log'))
     handler.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s, %(name)s, %(levelname)s, %(message)s')
+    formatter = logging.Formatter('%(asctime)s, %(levelname)s, %(message)s')
     handler.setFormatter(formatter)
     console = logging.StreamHandler()
     console.setLevel(logging.INFO)
@@ -78,6 +78,7 @@ if __name__ == "__main__":
 
     agent = DDPG(nb_states, nb_actions, args)
 
+    # log out useful information
     logger.info('<--------------- Experiment Setup --------------->')
     logger.info('random seed: {}'.format(args.seed))
     logger.info('number of workers: {}'.format(args.num_workers))
@@ -106,3 +107,5 @@ if __name__ == "__main__":
     logger.info('<------------------------------------------------>')
 
     train(agent, writer, logger, args)
+
+    logger.info('training finish!')

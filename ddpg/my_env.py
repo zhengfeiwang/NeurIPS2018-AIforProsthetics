@@ -57,7 +57,6 @@ class MyEnv:
         self.env = ProstheticsEnv(visualize=False, integrator_accuracy=accuracy)
         self.action_repeat = action_repeat
         self.reward_type = reward_type
-
         self.steps_count = 0
     
     def step(self, action):
