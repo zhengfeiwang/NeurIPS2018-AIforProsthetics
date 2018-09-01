@@ -3,7 +3,7 @@ from baselines.common.vec_env.subproc_vec_env import SubprocVecEnv
 from baselines.common.vec_env.vec_normalize import VecNormalize
 import baselines.ppo2.ppo2 as ppo2
 import baselines.ppo2.policies as policies
-from dev.custom_env import make_env
+from deprecated.custom_env import make_env
 from baselines.logger import configure
 from baselines.common import set_global_seeds
 
@@ -23,8 +23,8 @@ def train(num_timesteps, seed):
     policy = policies.MlpPolicy
     ppo2.learn(policy=policy,
                env=env,
-               nsteps=256,
-               nminibatches=num_cpus,
+               nsteps=128,
+               nminibatches=2,
                lam=0.9,
                gamma=0.99,
                noptepochs=5,
@@ -33,7 +33,7 @@ def train(num_timesteps, seed):
                lr=3e-4,
                cliprange=0.2,
                save_interval=10,
-               # load_path='logs/checkpoints/00050',    # restore training
+               load_path='logs/checkpoints/branch0_4steps',
                total_timesteps=num_timesteps)
 
 

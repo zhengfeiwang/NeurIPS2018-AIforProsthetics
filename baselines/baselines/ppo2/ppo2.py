@@ -119,6 +119,8 @@ class Runner(AbstractEnvRunner):
                 if maybeepinfo: epinfos.append(maybeepinfo)
             # when done, add episodic information to tensorboard
             for i in range(len(infos)):
+                mode = infos[i].get('mode')
+                if mode: break # if submit mode, bypass tensorboard
                 if self.dones[i]:
                     self.num_episode += 1
 
@@ -131,11 +133,14 @@ class Runner(AbstractEnvRunner):
 
                     summary = tf.Summary()
                     summary.value.add(tag='episode/original_reward', simple_value=infos[i]['episode']['r'])
+                    summary.value.add(tag='episode/shaped_reward', simple_value=infos[i]['episode']['sr'])
                     summary.value.add(tag='episode/length', simple_value=infos[i]['episode']['l'])
                     summary.value.add(tag='episode/pelvis_x', simple_value=infos[i]['episode']['pelvis_x'])
                     summary.value.add(tag='done/forward', simple_value=(1. * self.done_forward / self.num_episode))
                     summary.value.add(tag='done/backward', simple_value=(1. * self.done_backward / self.num_episode))
                     summary.value.add(tag='done/side', simple_value=(1. * self.done_side / self.num_episode))
+                    for key in infos[i]['episode']['penalty'].keys():
+                        summary.value.add(tag='penalty/' + key, simple_value=infos[i]['episode']['penalty'][key])
                     self.writer.add_summary(summary, self.num_episode)
 
             mb_rewards.append(rewards)
@@ -205,9 +210,9 @@ def learn(*, policy, env, nsteps, total_timesteps, ent_coef, lr,
         model.load(load_path)
         # load running mean std
         checkdir = osp.join(logger.get_dir(), 'checkpoints')
-        checkpoint = int(load_path.split('/')[-1])
-        ob_rms_path = osp.join(checkdir, '%.5i_ob_rms.pkl' % checkpoint)
-        ret_rms_path = osp.join(checkdir, '%.5i_ret_rms.pkl' % checkpoint)
+        checkpoint = load_path.split('/')[-1]
+        ob_rms_path = osp.join(checkdir, checkpoint + '_ob_rms.pkl')
+        ret_rms_path = osp.join(checkdir, checkpoint + '_ret_rms.pkl')
         if osp.exists(ob_rms_path) and osp.exists(ret_rms_path):
             with open(ob_rms_path, 'rb') as ob_rms_fp:
                 env.ob_rms = pickle.load(ob_rms_fp)

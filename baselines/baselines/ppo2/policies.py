@@ -118,13 +118,13 @@ class MlpPolicy(object):
         self.pdtype = make_pdtype(ac_space)
         with tf.variable_scope("model", reuse=reuse):
             X, processed_x = observation_input(ob_space, nbatch)
-            activ = tf.tanh
+            activ = tf.nn.selu
             processed_x = tf.layers.flatten(processed_x)
-            pi_h1 = activ(fc(processed_x, 'pi_fc1', nh=64, init_scale=np.sqrt(2)))
-            pi_h2 = activ(fc(pi_h1, 'pi_fc2', nh=64, init_scale=np.sqrt(2)))
-            vf_h1 = activ(fc(processed_x, 'vf_fc1', nh=64, init_scale=np.sqrt(2)))
-            vf_h2 = activ(fc(vf_h1, 'vf_fc2', nh=64, init_scale=np.sqrt(2)))
-            vf = activ(fc(vf_h2, 'vf', 1)[:,0])
+            pi_h1 = activ(fc(processed_x, 'pi_fc1', nh=256, init_scale=np.sqrt(2)))
+            pi_h2 = activ(fc(pi_h1, 'pi_fc2', nh=256, init_scale=np.sqrt(2)))
+            vf_h1 = activ(fc(processed_x, 'vf_fc1', nh=256, init_scale=np.sqrt(2)))
+            vf_h2 = activ(fc(vf_h1, 'vf_fc2', nh=256, init_scale=np.sqrt(2)))
+            vf = fc(vf_h2, 'vf', 1)[:, 0]
 
             self.pd, self.pi = self.pdtype.pdfromlatent(pi_h2, init_scale=0.01)
 

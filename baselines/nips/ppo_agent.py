@@ -8,7 +8,7 @@ from baselines.common.vec_env.subproc_vec_env import SubprocVecEnv
 from baselines.common.vec_env.dummy_vec_env import DummyVecEnv
 import baselines.ppo2.ppo2 as ppo2
 import baselines.ppo2.policies as policies
-from custom_env import make_env
+from nips.custom_env import make_env
 from baselines.logger import configure
 from baselines import bench, logger
 from baselines.common import set_global_seeds
@@ -26,8 +26,10 @@ def validate(num_timesteps, seed):
     with tf.Session(config=config):
         # Take more timesteps than we need to be sure that
         # we stop due to an exception.
+        env = DummyVecEnv([make_env])
+        env = VecNormalize(env)
         ppo2.learn(policy=policies.MlpPolicy,
-                   env=DummyVecEnv([make_env]),
+                   env=env,
                    nsteps=128,
                    nminibatches=16,
                    lam=0.95,
@@ -39,7 +41,7 @@ def validate(num_timesteps, seed):
                    lr=lambda _: 3e-4,
                    cliprange=lambda _: 0.2,
                    save_interval=10,
-                   load_path="./logs/history-0/00330",
+                   load_path="./logs/checkpoints/history-2/00050",
                    total_timesteps=num_timesteps
                    )
 
@@ -58,19 +60,19 @@ def train(num_timesteps, seed):
     ppo2.learn(policy=policy,
                env=env,
                nsteps=128,
-               nminibatches=16,
+               nminibatches=2,
                lam=0.95,
                gamma=0.99,
-               noptepochs=5,
+               noptepochs=4,
                log_interval=1,
-               ent_coef=0.0,
+               ent_coef=0.01,
                lr=3e-4,
                cliprange=0.2,
-               save_interval=10,
-               load_path="./logs/history-0/00330",
+               save_interval=5,
+               load_path="./logs/2_step/00310",
                total_timesteps=num_timesteps)
 
 
 if __name__ == '__main__':
     configure(dir="./logs")
-    train(int(1e6), 2)
+    train(int(1e6), 987)
