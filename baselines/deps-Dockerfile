@@ -1,7 +1,0 @@
-FROM 192.168.1.40:5000/inspir-ray/examples:0.5.0
-RUN conda install opensim openblas -c kidzik
-RUN pip install git+https://github.com/stanfordnmbl/osim-rl.git
-RUN yes|apt-get install vim
-RUN yes|apt-get install libopenmpi-dev openmpi-bin openmpi-doc
-RUN pip install mpi4py
-RUN pip install joblib

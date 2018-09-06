@@ -1,0 +1,610 @@
+/Users/wangzhengfei/anaconda3/envs/opensim-rl/bin/python /Users/wangzhengfei/Desktop/prosthetics/nips2018-motor-competition/submission/submit.py
+Logging to ./logs
+2018-09-04 09:35:11.340020: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+WARN: gym.spaces.Box autodetected dtype as <class 'numpy.float32'>. Please provide explicit dtype.
+WARN: gym.spaces.Box autodetected dtype as <class 'numpy.float32'>. Please provide explicit dtype.
+observation rms file loaded
+timestamp=  1 score= 3.88 velocity=0.74
+timestamp=  2 score= 8.12 velocity=0.82
+timestamp=  3 score=13.09 velocity=0.99
+timestamp=  4 score=18.75 velocity=1.17
+timestamp=  5 score=24.92 velocity=1.32
+timestamp=  6 score=31.19 velocity=1.35
+timestamp=  7 score=36.53 velocity=1.09
+timestamp=  8 score=39.63 velocity=0.57
+timestamp=  9 score=40.31 velocity=0.12
+timestamp= 10 score=39.25 velocity=-0.17
+timestamp= 11 score=37.26 velocity=-0.32
+timestamp= 12 score=34.93 velocity=-0.37
+timestamp= 13 score=32.33 velocity=-0.41
+timestamp= 14 score=30.26 velocity=-0.33
+timestamp= 15 score=29.09 velocity=-0.19
+timestamp= 16 score=28.82 velocity=-0.04
+timestamp= 17 score=29.40 velocity=0.10
+timestamp= 18 score=30.63 velocity=0.21
+timestamp= 19 score=32.34 velocity=0.30
+timestamp= 20 score=34.33 velocity=0.35
+timestamp= 21 score=36.46 velocity=0.38
+timestamp= 22 score=38.61 velocity=0.38
+timestamp= 23 score=40.71 velocity=0.37
+timestamp= 24 score=42.70 velocity=0.35
+timestamp= 25 score=44.60 velocity=0.34
+timestamp= 26 score=46.42 velocity=0.32
+timestamp= 27 score=48.18 velocity=0.31
+timestamp= 28 score=49.91 velocity=0.30
+timestamp= 29 score=51.62 velocity=0.30
+timestamp= 30 score=53.32 velocity=0.30
+timestamp= 31 score=54.92 velocity=0.28
+timestamp= 32 score=56.41 velocity=0.26
+timestamp= 33 score=57.84 velocity=0.25
+timestamp= 34 score=59.31 velocity=0.26
+timestamp= 35 score=60.94 velocity=0.28
+timestamp= 36 score=62.79 velocity=0.33
+timestamp= 37 score=64.89 velocity=0.37
+timestamp= 38 score=67.14 velocity=0.40
+timestamp= 39 score=69.59 velocity=0.44
+timestamp= 40 score=72.27 velocity=0.49
+timestamp= 41 score=75.11 velocity=0.52
+timestamp= 42 score=78.01 velocity=0.53
+timestamp= 43 score=80.91 velocity=0.53
+timestamp= 44 score=83.80 velocity=0.53
+timestamp= 45 score=86.73 velocity=0.54
+timestamp= 46 score=89.74 velocity=0.55
+timestamp= 47 score=92.80 velocity=0.56
+timestamp= 48 score=95.85 velocity=0.56
+timestamp= 49 score=98.85 velocity=0.55
+timestamp= 50 score=101.76 velocity=0.53
+timestamp= 51 score=104.62 velocity=0.52
+timestamp= 52 score=107.65 velocity=0.56
+timestamp= 53 score=111.19 velocity=0.66
+timestamp= 54 score=115.13 velocity=0.75
+timestamp= 55 score=119.27 velocity=0.80
+timestamp= 56 score=123.44 velocity=0.80
+timestamp= 57 score=127.55 velocity=0.79
+timestamp= 58 score=131.50 velocity=0.75
+timestamp= 59 score=135.28 velocity=0.72
+timestamp= 60 score=138.93 velocity=0.69
+timestamp= 61 score=142.45 velocity=0.66
+timestamp= 62 score=145.90 velocity=0.64
+timestamp= 63 score=149.42 velocity=0.66
+timestamp= 64 score=153.18 velocity=0.71
+timestamp= 65 score=157.26 velocity=0.78
+timestamp= 66 score=161.70 velocity=0.87
+timestamp= 67 score=166.52 velocity=0.96
+timestamp= 68 score=171.72 velocity=1.05
+timestamp= 69 score=177.21 velocity=1.13
+timestamp= 70 score=182.91 velocity=1.18
+timestamp= 71 score=188.74 velocity=1.22
+timestamp= 72 score=194.63 velocity=1.24
+timestamp= 73 score=200.56 velocity=1.25
+timestamp= 74 score=206.46 velocity=1.24
+timestamp= 75 score=212.33 velocity=1.23
+timestamp= 76 score=218.22 velocity=1.23
+timestamp= 77 score=224.16 velocity=1.25
+timestamp= 78 score=230.18 velocity=1.28
+timestamp= 79 score=236.34 velocity=1.31
+timestamp= 80 score=242.52 velocity=1.32
+timestamp= 81 score=248.97 velocity=1.40
+timestamp= 82 score=255.67 velocity=1.48
+timestamp= 83 score=262.49 velocity=1.52
+timestamp= 84 score=269.47 velocity=1.58
+timestamp= 85 score=276.52 velocity=1.60
+timestamp= 86 score=283.62 velocity=1.62
+timestamp= 87 score=290.88 velocity=1.68
+timestamp= 88 score=298.37 velocity=1.77
+timestamp= 89 score=305.99 velocity=1.83
+timestamp= 90 score=313.73 velocity=1.88
+timestamp= 91 score=321.60 velocity=1.93
+timestamp= 92 score=329.57 velocity=1.99
+timestamp= 93 score=337.58 velocity=2.00
+timestamp= 94 score=345.51 velocity=1.96
+timestamp= 95 score=353.39 velocity=1.94
+timestamp= 96 score=361.30 velocity=1.96
+timestamp= 97 score=369.38 velocity=2.04
+timestamp= 98 score=377.68 velocity=2.16
+timestamp= 99 score=386.09 velocity=2.23
+timestamp=100 score=394.40 velocity=2.17
+timestamp=101 score=402.55 velocity=2.08
+timestamp=102 score=410.59 velocity=2.02
+timestamp=103 score=418.59 velocity=2.00
+timestamp=104 score=426.66 velocity=2.04
+timestamp=105 score=434.69 velocity=2.02
+timestamp=106 score=442.52 velocity=1.92
+timestamp=107 score=450.15 velocity=1.83
+timestamp=108 score=457.74 velocity=1.81
+timestamp=109 score=465.40 velocity=1.84
+timestamp=110 score=473.16 velocity=1.88
+timestamp=111 score=480.96 velocity=1.91
+timestamp=112 score=488.57 velocity=1.82
+timestamp=113 score=495.92 velocity=1.71
+timestamp=114 score=503.04 velocity=1.63
+timestamp=115 score=510.02 velocity=1.58
+timestamp=116 score=516.94 velocity=1.56
+timestamp=117 score=523.81 velocity=1.54
+timestamp=118 score=530.58 velocity=1.51
+timestamp=119 score=537.27 velocity=1.48
+timestamp=120 score=543.89 velocity=1.46
+timestamp=121 score=550.45 velocity=1.44
+timestamp=122 score=556.97 velocity=1.43
+timestamp=123 score=563.49 velocity=1.42
+timestamp=124 score=570.03 velocity=1.43
+timestamp=125 score=576.73 velocity=1.48
+timestamp=126 score=583.59 velocity=1.54
+timestamp=127 score=590.55 velocity=1.57
+timestamp=128 score=597.69 velocity=1.64
+timestamp=129 score=604.95 velocity=1.68
+timestamp=130 score=612.26 velocity=1.70
+timestamp=131 score=619.66 velocity=1.73
+timestamp=132 score=627.06 velocity=1.73
+timestamp=133 score=634.58 velocity=1.78
+timestamp=134 score=642.42 velocity=1.92
+timestamp=135 score=650.62 velocity=2.11
+timestamp=136 score=659.02 velocity=2.22
+timestamp=137 score=667.57 velocity=2.33
+timestamp=138 score=676.20 velocity=2.39
+timestamp=139 score=684.84 velocity=2.40
+timestamp=140 score=693.48 velocity=2.40
+timestamp=141 score=702.11 velocity=2.39
+timestamp=142 score=710.73 velocity=2.39
+timestamp=143 score=719.34 velocity=2.38
+timestamp=144 score=727.90 velocity=2.34
+timestamp=145 score=736.47 velocity=2.34
+timestamp=146 score=745.09 velocity=2.39
+timestamp=147 score=753.82 velocity=2.48
+timestamp=148 score=762.67 velocity=2.61
+timestamp=149 score=771.56 velocity=2.67
+timestamp=150 score=780.42 velocity=2.62
+timestamp=151 score=789.19 velocity=2.52
+timestamp=152 score=797.96 velocity=2.52
+timestamp=153 score=806.74 velocity=2.53
+timestamp=154 score=815.45 velocity=2.46
+timestamp=155 score=824.00 velocity=2.33
+timestamp=156 score=832.36 velocity=2.20
+timestamp=157 score=840.59 velocity=2.12
+timestamp=158 score=848.77 velocity=2.10
+timestamp=159 score=857.00 velocity=2.12
+timestamp=160 score=865.33 velocity=2.18
+timestamp=161 score=873.77 velocity=2.25
+timestamp=162 score=882.29 velocity=2.31
+timestamp=163 score=890.83 velocity=2.32
+timestamp=164 score=899.32 velocity=2.29
+timestamp=165 score=907.70 velocity=2.21
+timestamp=166 score=915.93 velocity=2.12
+timestamp=167 score=923.96 velocity=2.01
+timestamp=168 score=931.75 velocity=1.90
+timestamp=169 score=939.31 velocity=1.80
+timestamp=170 score=946.66 velocity=1.71
+timestamp=171 score=953.85 velocity=1.66
+timestamp=172 score=960.92 velocity=1.61
+timestamp=173 score=967.90 velocity=1.58
+timestamp=174 score=974.83 velocity=1.56
+timestamp=175 score=981.81 velocity=1.58
+timestamp=176 score=988.93 velocity=1.63
+timestamp=177 score=996.26 velocity=1.71
+timestamp=178 score=1003.75 velocity=1.77
+timestamp=179 score=1011.30 velocity=1.80
+timestamp=180 score=1018.86 velocity=1.80
+timestamp=181 score=1026.58 velocity=1.87
+timestamp=182 score=1034.47 velocity=1.95
+timestamp=183 score=1042.39 velocity=1.96
+timestamp=184 score=1050.39 velocity=2.00
+timestamp=185 score=1058.57 velocity=2.09
+timestamp=186 score=1066.96 velocity=2.22
+timestamp=187 score=1075.52 velocity=2.33
+timestamp=188 score=1084.25 velocity=2.48
+timestamp=189 score=1093.09 velocity=2.60
+timestamp=190 score=1101.98 velocity=2.67
+timestamp=191 score=1110.89 velocity=2.70
+timestamp=192 score=1119.80 velocity=2.70
+timestamp=193 score=1128.70 velocity=2.68
+timestamp=194 score=1137.59 velocity=2.66
+timestamp=195 score=1146.45 velocity=2.64
+timestamp=196 score=1155.32 velocity=2.64
+timestamp=197 score=1164.21 velocity=2.67
+timestamp=198 score=1173.13 velocity=2.72
+timestamp=199 score=1182.07 velocity=2.76
+timestamp=200 score=1191.05 velocity=2.84
+timestamp=201 score=1200.02 velocity=2.84
+timestamp=202 score=1208.98 velocity=2.79
+timestamp=203 score=1217.92 velocity=2.77
+timestamp=204 score=1226.88 velocity=2.79
+timestamp=205 score=1235.79 velocity=2.70
+timestamp=206 score=1244.57 velocity=2.54
+timestamp=207 score=1253.21 velocity=2.40
+timestamp=208 score=1261.72 velocity=2.30
+timestamp=209 score=1270.18 velocity=2.27
+timestamp=210 score=1278.62 velocity=2.25
+timestamp=211 score=1287.08 velocity=2.27
+timestamp=212 score=1295.62 velocity=2.32
+timestamp=213 score=1304.26 velocity=2.40
+timestamp=214 score=1312.97 velocity=2.46
+timestamp=215 score=1321.72 velocity=2.50
+timestamp=216 score=1330.51 velocity=2.54
+timestamp=217 score=1339.28 velocity=2.51
+timestamp=218 score=1347.92 velocity=2.40
+timestamp=219 score=1356.43 velocity=2.30
+timestamp=220 score=1364.81 velocity=2.21
+timestamp=221 score=1373.02 velocity=2.11
+timestamp=222 score=1381.01 velocity=1.99
+timestamp=223 score=1388.88 velocity=1.94
+timestamp=224 score=1396.60 velocity=1.87
+timestamp=225 score=1404.06 velocity=1.76
+timestamp=226 score=1411.24 velocity=1.65
+timestamp=227 score=1418.16 velocity=1.56
+timestamp=228 score=1424.98 velocity=1.52
+timestamp=229 score=1431.98 velocity=1.59
+timestamp=230 score=1439.74 velocity=1.89
+timestamp=231 score=1448.19 velocity=2.26
+timestamp=232 score=1456.94 velocity=2.50
+timestamp=233 score=1465.77 velocity=2.58
+timestamp=234 score=1474.52 velocity=2.50
+timestamp=235 score=1483.33 velocity=2.57
+timestamp=236 score=1492.22 velocity=2.66
+timestamp=237 score=1501.15 velocity=2.75
+timestamp=238 score=1510.11 velocity=2.79
+timestamp=239 score=1519.06 velocity=2.79
+timestamp=240 score=1528.02 velocity=2.79
+timestamp=241 score=1536.98 velocity=2.80
+timestamp=242 score=1545.96 velocity=2.87
+timestamp=243 score=1554.96 velocity=2.94
+timestamp=244 score=1563.96 velocity=2.99
+timestamp=245 score=1572.96 velocity=3.01
+timestamp=246 score=1581.95 velocity=3.05
+timestamp=247 score=1590.94 velocity=3.10
+timestamp=248 score=1599.91 velocity=3.19
+timestamp=249 score=1608.86 velocity=3.22
+timestamp=250 score=1617.82 velocity=3.21
+timestamp=251 score=1626.78 velocity=3.18
+timestamp=252 score=1635.77 velocity=3.13
+timestamp=253 score=1644.76 velocity=3.07
+timestamp=254 score=1653.76 velocity=2.95
+timestamp=255 score=1662.68 velocity=2.71
+timestamp=256 score=1671.44 velocity=2.51
+timestamp=257 score=1680.08 velocity=2.40
+timestamp=258 score=1688.72 velocity=2.41
+timestamp=259 score=1697.40 velocity=2.43
+timestamp=260 score=1706.10 velocity=2.45
+timestamp=261 score=1714.81 velocity=2.46
+timestamp=262 score=1723.57 velocity=2.51
+timestamp=263 score=1732.36 velocity=2.55
+timestamp=264 score=1741.18 velocity=2.57
+timestamp=265 score=1750.04 velocity=2.63
+timestamp=266 score=1758.95 velocity=2.70
+timestamp=267 score=1767.85 velocity=2.68
+timestamp=268 score=1776.64 velocity=2.54
+timestamp=269 score=1785.44 velocity=2.55
+timestamp=270 score=1794.23 velocity=2.54
+timestamp=271 score=1802.93 velocity=2.45
+timestamp=272 score=1811.47 velocity=2.32
+timestamp=273 score=1819.85 velocity=2.21
+timestamp=274 score=1828.04 velocity=2.10
+timestamp=275 score=1836.05 velocity=2.00
+timestamp=276 score=1843.97 velocity=1.96
+timestamp=277 score=1851.91 velocity=1.97
+timestamp=278 score=1860.13 velocity=2.12
+timestamp=279 score=1868.81 velocity=2.43
+timestamp=280 score=1877.75 velocity=2.76
+timestamp=281 score=1886.72 velocity=2.83
+timestamp=282 score=1895.70 velocity=2.84
+timestamp=283 score=1904.68 velocity=2.87
+timestamp=284 score=1913.65 velocity=2.84
+timestamp=285 score=1922.62 velocity=2.83
+timestamp=286 score=1931.60 velocity=2.84
+timestamp=287 score=1940.58 velocity=2.87
+timestamp=288 score=1949.57 velocity=2.91
+timestamp=289 score=1958.57 velocity=3.01
+timestamp=290 score=1967.56 velocity=3.13
+timestamp=291 score=1976.52 velocity=3.20
+timestamp=292 score=1985.48 velocity=3.19
+timestamp=293 score=1994.44 velocity=3.20
+timestamp=294 score=2003.40 velocity=3.21
+timestamp=295 score=2012.35 velocity=3.23
+timestamp=296 score=2021.29 velocity=3.24
+timestamp=297 score=2030.20 velocity=3.30
+timestamp=298 score=2039.04 velocity=3.40
+timestamp=299 score=2047.85 velocity=3.44
+timestamp=300 score=2056.69 velocity=3.40
+timestamp=  1 score= 3.88 velocity=0.74
+timestamp=  2 score= 8.12 velocity=0.82
+timestamp=  3 score=13.09 velocity=0.99
+timestamp=  4 score=18.75 velocity=1.17
+timestamp=  5 score=24.92 velocity=1.32
+timestamp=  6 score=31.18 velocity=1.35
+timestamp=  7 score=36.51 velocity=1.08
+timestamp=  8 score=39.60 velocity=0.57
+timestamp=  9 score=40.27 velocity=0.11
+timestamp= 10 score=39.20 velocity=-0.17
+timestamp= 11 score=37.20 velocity=-0.32
+timestamp= 12 score=34.84 velocity=-0.37
+timestamp= 13 score=32.24 velocity=-0.41
+timestamp= 14 score=30.19 velocity=-0.32
+timestamp= 15 score=29.05 velocity=-0.18
+timestamp= 16 score=28.82 velocity=-0.04
+timestamp= 17 score=29.44 velocity=0.10
+timestamp= 18 score=30.71 velocity=0.22
+timestamp= 19 score=32.44 velocity=0.30
+timestamp= 20 score=34.45 velocity=0.36
+timestamp= 21 score=36.59 velocity=0.38
+timestamp= 22 score=38.74 velocity=0.38
+timestamp= 23 score=40.82 velocity=0.37
+timestamp= 24 score=42.81 velocity=0.35
+timestamp= 25 score=44.69 velocity=0.33
+timestamp= 26 score=46.49 velocity=0.32
+timestamp= 27 score=48.24 velocity=0.31
+timestamp= 28 score=49.96 velocity=0.30
+timestamp= 29 score=51.66 velocity=0.30
+timestamp= 30 score=53.34 velocity=0.29
+timestamp= 31 score=54.92 velocity=0.28
+timestamp= 32 score=56.40 velocity=0.26
+timestamp= 33 score=57.83 velocity=0.25
+timestamp= 34 score=59.29 velocity=0.25
+timestamp= 35 score=60.91 velocity=0.28
+timestamp= 36 score=62.76 velocity=0.33
+timestamp= 37 score=64.83 velocity=0.37
+timestamp= 38 score=67.06 velocity=0.40
+timestamp= 39 score=69.48 velocity=0.44
+timestamp= 40 score=72.13 velocity=0.48
+timestamp= 41 score=74.94 velocity=0.51
+timestamp= 42 score=77.82 velocity=0.53
+timestamp= 43 score=80.71 velocity=0.53
+timestamp= 44 score=83.61 velocity=0.53
+timestamp= 45 score=86.56 velocity=0.54
+timestamp= 46 score=89.61 velocity=0.56
+timestamp= 47 score=92.73 velocity=0.57
+timestamp= 48 score=95.85 velocity=0.57
+timestamp= 49 score=98.88 velocity=0.56
+timestamp= 50 score=101.83 velocity=0.54
+timestamp= 51 score=104.71 velocity=0.53
+timestamp= 52 score=107.71 velocity=0.55
+timestamp= 53 score=111.21 velocity=0.65
+timestamp= 54 score=115.13 velocity=0.75
+timestamp= 55 score=119.26 velocity=0.79
+timestamp= 56 score=123.44 velocity=0.80
+timestamp= 57 score=127.56 velocity=0.79
+timestamp= 58 score=131.54 velocity=0.76
+timestamp= 59 score=135.36 velocity=0.72
+timestamp= 60 score=139.09 velocity=0.70
+timestamp= 61 score=142.75 velocity=0.69
+timestamp= 62 score=146.37 velocity=0.68
+timestamp= 63 score=150.04 velocity=0.69
+timestamp= 64 score=153.89 velocity=0.73
+timestamp= 65 score=158.01 velocity=0.79
+timestamp= 66 score=162.43 velocity=0.86
+timestamp= 67 score=167.18 velocity=0.94
+timestamp= 68 score=172.26 velocity=1.02
+timestamp= 69 score=177.62 velocity=1.09
+timestamp= 70 score=183.21 velocity=1.15
+timestamp= 71 score=188.96 velocity=1.20
+timestamp= 72 score=194.82 velocity=1.23
+timestamp= 73 score=200.75 velocity=1.25
+timestamp= 74 score=206.68 velocity=1.25
+timestamp= 75 score=212.59 velocity=1.24
+timestamp= 76 score=218.53 velocity=1.25
+timestamp= 77 score=224.52 velocity=1.27
+timestamp= 78 score=230.59 velocity=1.29
+timestamp= 79 score=236.76 velocity=1.32
+timestamp= 80 score=242.94 velocity=1.32
+timestamp= 81 score=249.40 velocity=1.40
+timestamp= 82 score=256.09 velocity=1.48
+timestamp= 83 score=262.91 velocity=1.52
+timestamp= 84 score=269.90 velocity=1.58
+timestamp= 85 score=276.95 velocity=1.61
+timestamp= 86 score=284.10 velocity=1.64
+timestamp= 87 score=291.40 velocity=1.70
+timestamp= 88 score=298.93 velocity=1.79
+timestamp= 89 score=306.58 velocity=1.84
+timestamp= 90 score=314.33 velocity=1.88
+timestamp= 91 score=322.19 velocity=1.93
+timestamp= 92 score=330.16 velocity=1.98
+timestamp= 93 score=338.16 velocity=2.00
+timestamp= 94 score=346.06 velocity=1.95
+timestamp= 95 score=353.90 velocity=1.92
+timestamp= 96 score=361.77 velocity=1.94
+timestamp= 97 score=369.82 velocity=2.02
+timestamp= 98 score=378.10 velocity=2.15
+timestamp= 99 score=386.49 velocity=2.22
+timestamp=100 score=394.81 velocity=2.18
+timestamp=101 score=402.98 velocity=2.09
+timestamp=102 score=411.03 velocity=2.03
+timestamp=103 score=419.03 velocity=2.00
+timestamp=104 score=427.09 velocity=2.03
+timestamp=105 score=435.10 velocity=2.00
+timestamp=106 score=442.90 velocity=1.91
+timestamp=107 score=450.52 velocity=1.82
+timestamp=108 score=458.11 velocity=1.81
+timestamp=109 score=465.79 velocity=1.85
+timestamp=110 score=473.56 velocity=1.89
+timestamp=111 score=481.37 velocity=1.91
+timestamp=112 score=488.99 velocity=1.83
+timestamp=113 score=496.33 velocity=1.71
+timestamp=114 score=503.42 velocity=1.62
+timestamp=115 score=510.38 velocity=1.57
+timestamp=116 score=517.26 velocity=1.54
+timestamp=117 score=524.09 velocity=1.53
+timestamp=118 score=530.83 velocity=1.50
+timestamp=119 score=537.49 velocity=1.47
+timestamp=120 score=544.09 velocity=1.45
+timestamp=121 score=550.62 velocity=1.43
+timestamp=122 score=557.12 velocity=1.42
+timestamp=123 score=563.62 velocity=1.42
+timestamp=124 score=570.15 velocity=1.43
+timestamp=125 score=576.84 velocity=1.48
+timestamp=126 score=583.69 velocity=1.54
+timestamp=127 score=590.65 velocity=1.57
+timestamp=128 score=597.78 velocity=1.64
+timestamp=129 score=605.04 velocity=1.68
+timestamp=130 score=612.29 velocity=1.68
+timestamp=131 score=619.65 velocity=1.72
+timestamp=132 score=626.99 velocity=1.71
+timestamp=133 score=634.41 velocity=1.74
+timestamp=134 score=642.15 velocity=1.88
+timestamp=135 score=650.29 velocity=2.07
+timestamp=136 score=658.63 velocity=2.19
+timestamp=137 score=667.16 velocity=2.31
+timestamp=138 score=675.80 velocity=2.40
+timestamp=139 score=684.49 velocity=2.44
+timestamp=140 score=693.20 velocity=2.46
+timestamp=141 score=701.91 velocity=2.46
+timestamp=142 score=710.61 velocity=2.46
+timestamp=143 score=719.29 velocity=2.44
+timestamp=144 score=727.91 velocity=2.38
+timestamp=145 score=736.51 velocity=2.37
+timestamp=146 score=745.16 velocity=2.41
+timestamp=147 score=753.91 velocity=2.50
+timestamp=148 score=762.76 velocity=2.62
+timestamp=149 score=771.65 velocity=2.67
+timestamp=150 score=780.50 velocity=2.61
+timestamp=151 score=789.28 velocity=2.53
+timestamp=152 score=798.07 velocity=2.53
+timestamp=153 score=806.84 velocity=2.53
+timestamp=154 score=815.55 velocity=2.46
+timestamp=155 score=824.10 velocity=2.33
+timestamp=156 score=832.50 velocity=2.23
+timestamp=157 score=840.81 velocity=2.17
+timestamp=158 score=849.07 velocity=2.14
+timestamp=159 score=857.30 velocity=2.13
+timestamp=160 score=865.59 velocity=2.16
+timestamp=161 score=873.98 velocity=2.22
+timestamp=162 score=882.45 velocity=2.27
+timestamp=163 score=890.97 velocity=2.30
+timestamp=164 score=899.50 velocity=2.32
+timestamp=165 score=908.00 velocity=2.29
+timestamp=166 score=916.37 velocity=2.21
+timestamp=167 score=924.52 velocity=2.07
+timestamp=168 score=932.36 velocity=1.93
+timestamp=169 score=939.94 velocity=1.81
+timestamp=170 score=947.27 velocity=1.71
+timestamp=171 score=954.42 velocity=1.64
+timestamp=172 score=961.47 velocity=1.60
+timestamp=173 score=968.45 velocity=1.58
+timestamp=174 score=975.41 velocity=1.57
+timestamp=175 score=982.39 velocity=1.58
+timestamp=176 score=989.49 velocity=1.62
+timestamp=177 score=996.80 velocity=1.70
+timestamp=178 score=1004.30 velocity=1.77
+timestamp=179 score=1011.87 velocity=1.81
+timestamp=180 score=1019.46 velocity=1.81
+timestamp=181 score=1027.05 velocity=1.81
+timestamp=182 score=1034.79 velocity=1.88
+timestamp=183 score=1042.57 velocity=1.90
+timestamp=184 score=1050.49 velocity=1.96
+timestamp=185 score=1058.63 velocity=2.07
+timestamp=186 score=1067.01 velocity=2.21
+timestamp=187 score=1075.55 velocity=2.33
+timestamp=188 score=1084.27 velocity=2.47
+timestamp=189 score=1093.08 velocity=2.57
+timestamp=190 score=1101.95 velocity=2.63
+timestamp=191 score=1110.84 velocity=2.67
+timestamp=192 score=1119.75 velocity=2.70
+timestamp=193 score=1128.66 velocity=2.70
+timestamp=194 score=1137.55 velocity=2.67
+timestamp=195 score=1146.43 velocity=2.65
+timestamp=196 score=1155.30 velocity=2.64
+timestamp=197 score=1164.20 velocity=2.68
+timestamp=198 score=1173.12 velocity=2.73
+timestamp=199 score=1182.09 velocity=2.81
+timestamp=200 score=1191.06 velocity=2.85
+timestamp=201 score=1200.01 velocity=2.76
+timestamp=202 score=1208.89 velocity=2.66
+timestamp=203 score=1217.74 velocity=2.62
+timestamp=204 score=1226.58 velocity=2.59
+timestamp=205 score=1235.35 velocity=2.53
+timestamp=206 score=1243.99 velocity=2.40
+timestamp=207 score=1252.53 velocity=2.32
+timestamp=208 score=1261.05 velocity=2.31
+timestamp=209 score=1269.58 velocity=2.31
+timestamp=210 score=1278.11 velocity=2.32
+timestamp=211 score=1286.67 velocity=2.34
+timestamp=212 score=1295.28 velocity=2.37
+timestamp=213 score=1303.93 velocity=2.41
+timestamp=214 score=1312.65 velocity=2.46
+timestamp=215 score=1321.44 velocity=2.55
+timestamp=216 score=1330.29 velocity=2.60
+timestamp=217 score=1339.09 velocity=2.55
+timestamp=218 score=1347.75 velocity=2.42
+timestamp=219 score=1356.25 velocity=2.29
+timestamp=220 score=1364.52 velocity=2.15
+timestamp=221 score=1372.56 velocity=2.02
+timestamp=222 score=1380.47 velocity=1.96
+timestamp=223 score=1388.30 velocity=1.92
+timestamp=224 score=1395.92 velocity=1.82
+timestamp=225 score=1403.30 velocity=1.73
+timestamp=226 score=1410.55 velocity=1.68
+timestamp=227 score=1417.69 velocity=1.64
+timestamp=228 score=1425.02 velocity=1.71
+timestamp=229 score=1432.81 velocity=1.90
+timestamp=230 score=1441.14 velocity=2.19
+timestamp=231 score=1449.83 velocity=2.44
+timestamp=232 score=1458.52 velocity=2.45
+timestamp=233 score=1467.15 velocity=2.40
+timestamp=234 score=1475.89 velocity=2.49
+timestamp=235 score=1484.71 velocity=2.57
+timestamp=236 score=1493.57 velocity=2.62
+timestamp=237 score=1502.46 velocity=2.67
+timestamp=238 score=1511.39 velocity=2.74
+timestamp=239 score=1520.35 velocity=2.81
+timestamp=240 score=1529.33 velocity=2.86
+timestamp=241 score=1538.32 velocity=2.88
+timestamp=242 score=1547.30 velocity=2.88
+timestamp=243 score=1556.29 velocity=2.88
+timestamp=244 score=1565.28 velocity=2.89
+timestamp=245 score=1574.27 velocity=2.91
+timestamp=246 score=1583.26 velocity=2.93
+timestamp=247 score=1592.26 velocity=2.95
+timestamp=248 score=1601.26 velocity=2.96
+timestamp=249 score=1610.26 velocity=3.01
+timestamp=250 score=1619.26 velocity=3.04
+timestamp=251 score=1628.25 velocity=3.06
+timestamp=252 score=1637.25 velocity=3.00
+timestamp=253 score=1646.25 velocity=2.95
+timestamp=254 score=1655.22 velocity=2.83
+timestamp=255 score=1664.09 velocity=2.64
+timestamp=256 score=1672.81 velocity=2.46
+timestamp=257 score=1681.40 velocity=2.36
+timestamp=258 score=1689.93 velocity=2.32
+timestamp=259 score=1698.46 velocity=2.31
+timestamp=260 score=1707.03 velocity=2.34
+timestamp=261 score=1715.64 velocity=2.37
+timestamp=262 score=1724.26 velocity=2.39
+timestamp=263 score=1732.91 velocity=2.41
+timestamp=264 score=1741.58 velocity=2.43
+timestamp=265 score=1750.31 velocity=2.47
+timestamp=266 score=1759.11 velocity=2.56
+timestamp=267 score=1768.00 velocity=2.67
+timestamp=268 score=1776.95 velocity=2.76
+timestamp=269 score=1785.89 velocity=2.77
+timestamp=270 score=1794.81 velocity=2.71
+timestamp=271 score=1803.66 velocity=2.61
+timestamp=272 score=1812.41 velocity=2.51
+timestamp=273 score=1821.10 velocity=2.44
+timestamp=274 score=1829.76 velocity=2.42
+timestamp=275 score=1838.33 velocity=2.34
+timestamp=276 score=1846.71 velocity=2.21
+timestamp=277 score=1854.85 velocity=2.08
+timestamp=278 score=1862.82 velocity=1.98
+timestamp=279 score=1870.79 velocity=1.98
+timestamp=280 score=1879.09 velocity=2.17
+timestamp=281 score=1887.54 velocity=2.25
+timestamp=282 score=1895.96 velocity=2.24
+timestamp=283 score=1904.52 velocity=2.34
+timestamp=284 score=1913.27 velocity=2.49
+timestamp=285 score=1922.14 velocity=2.64
+timestamp=286 score=1931.09 velocity=2.79
+timestamp=287 score=1940.08 velocity=2.90
+timestamp=288 score=1949.08 velocity=2.97
+timestamp=289 score=1958.08 velocity=3.02
+timestamp=290 score=1967.08 velocity=3.04
+timestamp=291 score=1976.08 velocity=3.01
+timestamp=292 score=1985.08 velocity=2.96
+timestamp=293 score=1994.08 velocity=2.97
+timestamp=294 score=2003.08 velocity=3.01
+timestamp=295 score=2012.08 velocity=3.03
+timestamp=296 score=2021.08 velocity=3.00
+timestamp=297 score=2030.08 velocity=3.00
+timestamp=298 score=2039.07 velocity=3.05
+timestamp=299 score=2048.07 velocity=3.10
+timestamp=300 score=2057.05 velocity=3.11
+Your total reward from this submission: 2056.871756
+SUBMITTED
+
+Process finished with exit code 0
