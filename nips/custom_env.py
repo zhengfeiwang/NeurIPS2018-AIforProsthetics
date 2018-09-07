@@ -111,9 +111,6 @@ class CustomEnv(ProstheticsEnv):
         pelvis_z = abs(state_desc["body_pos"]["pelvis"][2])
         reward -= max(0, pelvis_z - 0.6) * 100
 
-        pros_vz = abs(state_desc["body_vel"]["pros_foot_r"][2])
-        reward -= max(0, pros_vz - 0.75) * 100
-
         return reward * 0.05
 
 

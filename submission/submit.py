@@ -30,7 +30,7 @@ def submit(num_timesteps, seed):
                    lr=3e-4,
                    cliprange=0.2,
                    save_interval=10,
-                   load_path="./logs/early_300/00148",
+                   load_path="./logs/course_7/00036",
                    total_timesteps=num_timesteps
                    )
 

@@ -22,7 +22,7 @@ def train(num_timesteps, seed):
                             inter_op_parallelism_threads=num_cpus)
     tf.Session(config=config).__enter__()
 
-    gamma = 0.95
+    gamma = 0.995
 
     env = RemoteVecEnv([make_env] * num_cpus)
     env = VecNormalize(env, ret=True, gamma=gamma)
@@ -39,10 +39,10 @@ def train(num_timesteps, seed):
                log_interval=1,
                vf_coef=0.5,
                ent_coef=0.0,
-               lr=3e-5,
+               lr=3e-4,
                cliprange=0.2,
                save_interval=2,
-               load_path="./logs/course_5/00114",
+               load_path="./logs/course_6/00244",
                total_timesteps=num_timesteps,
                num_casks=num_casks)
 
