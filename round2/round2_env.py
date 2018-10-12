@@ -104,9 +104,7 @@ class Round2Env(ProstheticsEnv):
         if not prev_state_desc:
             return 0
 
-        pelvis_vx = state_desc["body_vel"]["pelvis"][0]
-        reward = 9.0 - (pelvis_vx - 3.0) ** 2
-        reward = 0.5 * reward + 1
+        reward = 0.5 * self.reward_round2() + 1
 
         front_foot = state_desc["body_pos"]["pros_foot_r"][0]
         back_foot = state_desc["body_pos"]["toes_l"][0]
