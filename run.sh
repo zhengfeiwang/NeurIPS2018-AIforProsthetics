@@ -1,5 +1,7 @@
+#!/usr/bin/env bash
 python -m round2.round2_train \
-    --num-steps=128 \
-    --num-minibatches=8 \
-    --num-cpus=8 --num-casks=8 \
+    --num-timesteps=1e7 \
+    --num-steps=1024 \
+    --num-minibatches=16 \
+    --num-cpus=24 --num-casks=8 \
     --seed=60730

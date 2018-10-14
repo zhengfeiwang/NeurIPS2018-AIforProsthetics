@@ -43,7 +43,7 @@ def train():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='PPO training for NIPS 2018: AI for Prosthetics Challenge, Round 2')
-    parser.add_argument('--num-timesteps', default=1e6, help='number of timesteps')
+    parser.add_argument('--num-timesteps', default=1e6, type=int, help='number of timesteps')
     # batch_size = num_steps * num_envs
     parser.add_argument('--num-steps', default=256, type=int, help='number of steps per update')
     # valid number of envs
@@ -69,6 +69,7 @@ if __name__ == "__main__":
     parser.add_argument('--save-interval', default=1, type=int, help='number of timesteps between saving events')
     parser.add_argument('--checkpoint-path', default=None, type=str, help='path to load the model checkpoint from')
     args = parser.parse_args()
+    print(args)
 
     ray.init()
     set_global_seeds(args.seed)
