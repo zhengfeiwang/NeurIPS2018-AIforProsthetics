@@ -45,7 +45,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='PPO training for NIPS 2018: AI for Prosthetics Challenge, Round 2')
     parser.add_argument('--num-timesteps', default=1e6, type=int, help='number of timesteps')
     # batch_size = num_steps * num_envs
-    parser.add_argument('--num-steps', default=256, type=int, help='number of steps per update')
+    parser.add_argument('--num-steps', default=128, type=int, help='number of steps per update')
     # valid number of envs
     parser.add_argument('--num-minibatches', default=1, type=int, help='number of training minibatches per update')
     parser.add_argument('--num-epochs', default=4, type=int, help='number of training epochs per update')
