@@ -106,8 +106,8 @@ class Round2Env(ProstheticsEnv):
             return 0
 
         # course 1 - basic walk
-        pelvis_vx = state_desc["body_vel"]["pelvis"]
-        reward = 0.5 * pelvis_vx
+        pelvis_vx = state_desc["body_vel"]["pelvis"][0]
+        reward = 0.2 * pelvis_vx + 0.1
 
         return reward
 
