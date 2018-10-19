@@ -107,9 +107,9 @@ class Round2Env(ProstheticsEnv):
 
         # course 1 - basic walk
         pelvis_vx = state_desc["body_vel"]["pelvis"][0]
-        reward = 0.2 * pelvis_vx + 0.1
+        reward = pelvis_vx * 4 + 2
 
-        return reward
+        return reward * 0.05
 
 
 class CustomActionWrapper(gym.ActionWrapper):
