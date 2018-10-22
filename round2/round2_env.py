@@ -1,3 +1,4 @@
+import copy
 import numpy as np
 import gym
 from gym.spaces import Box
@@ -115,6 +116,7 @@ class Round2Env(ProstheticsEnv):
 class CustomActionWrapper(gym.ActionWrapper):
 
     def step(self, action):
+        policy_out = copy.deepcopy(action)
         action = self.action(action)
         rew = 0
         for i in range(2):
@@ -122,8 +124,8 @@ class CustomActionWrapper(gym.ActionWrapper):
             rew += r
             if done:
                 break
-        info["action"] = action
+        info["action"] = policy_out
         return obs, rew, done, info
 
     def action(self, action):
-        return np.clip(action, 0.0, 1.0)    # clip for valid action
+        return np.clip(action, 0.0, 1.0)
