@@ -21,18 +21,11 @@ class Round2Env(ProstheticsEnv):
         obs, r, done, info = super(Round2Env, self).step(action)
         self.episode_length += 1
 
-        # early termination penalty
-        if done and self.episode_length < self.time_limit:
-            r -= 2
-
         original_reward = super(Round2Env, self).reward()
         self.episode_original_reward += original_reward
         self.episode_shaped_reward += r
 
         state_desc = self.get_state_desc()
-
-        # log information
-        # print('timestamp:', self.episode_length, 'pros_foot_y:', state_desc["body_pos"]["pros_foot_r"][1])
 
         if done:
             info['episode'] = {
@@ -107,13 +100,13 @@ class Round2Env(ProstheticsEnv):
             return 0
 
         pelvis_vx = state_desc["body_vel"]["pelvis"][0]
-        reward = min(1.0, pelvis_vx) * 2 + 1
+        reward = pelvis_vx * 4 + 2
 
         lean_back = max(0, state_desc["body_pos"]["pelvis"][0] - state_desc["body_pos"]["head"][0] - 0.2)
         reward -= lean_back * 40
 
         low_pelvis = max(0, 0.70 - state_desc["body_pos"]["pelvis"][1])
-        reward -= low_pelvis * 40
+        reward -= low_pelvis * 100
 
         return reward * 0.05
 
