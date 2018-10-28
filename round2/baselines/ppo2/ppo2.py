@@ -170,9 +170,9 @@ class Runner(AbstractEnvRunner):
 
             # Cask Effect: top self.nenvs - num_casks is ready
             # if all([len(mb_rewards[i]) >= 128 for i in range(self.nenvs)]):
-            if sum([len(mb_rewards[i]) >= 128 for i in range(self.nenvs)]) >= self.valid:
+            if sum([len(mb_rewards[i]) >= self.nsteps for i in range(self.nenvs)]) >= self.valid:
                 for i in range(self.nenvs):
-                    if len(mb_rewards[i]) < 128:
+                    if len(mb_rewards[i]) < self.nsteps:
                         self.casks.add(i)
                 break
 
