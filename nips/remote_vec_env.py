@@ -2,6 +2,8 @@ import numpy as np
 from baselines.common.vec_env import VecEnv
 import ray
 
+from nips.round2_env import OBSERVATION_SPACE
+
 
 class TaskPool(object):
     """Helper class for tracking the status of many in-flight actor tasks."""
@@ -71,7 +73,7 @@ class RemoteVecEnv(VecEnv):
         observation_space, action_space = ray.get(self.actors[0].get_spaces.remote())
         VecEnv.__init__(self, len(env_fns), observation_space, action_space)
 
-        self.results = [([0] * 224, 0, False, {"bad": True})] * self.num_envs
+        self.results = [([0] * OBSERVATION_SPACE, 0, False, {"bad": True})] * self.num_envs
 
     def step_async(self, actions):
         for actor, action in zip(self.actors, actions):

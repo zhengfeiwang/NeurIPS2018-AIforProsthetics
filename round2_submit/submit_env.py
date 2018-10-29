@@ -36,8 +36,11 @@ class Round2SubmitEnv:
         [obs, rew, done, info] = self.client.env_step(action.tolist(), True)
         self.episodic_length += 1
         self.score += rew
-        pelvis_vx = obs['body_vel']['pelvis'][0]
-        print(f'timestamp={self.episodic_length:3d} score={self.score:5.2f} velocity={pelvis_vx:3.2f}')
+        target_vx, target_vz = obs["target_vel"][0], obs["target_vel"][2]
+        pelvis_vx, pelvis_vz = obs['body_vel']['pelvis'][0], obs['body_vel']['pelvis'][2]
+        print(f'timestamp={self.episodic_length:3d} score={self.score:5.2f}')
+        print(f'    target_vx={target_vx:3.2f} current_vx={pelvis_vx:3.2f}')
+        print(f'    target_vz={target_vz:3.2f} current_vz={pelvis_vz:3.2f}')
         import sys
         sys.stdout.flush()
         return self.get_observation(obs), rew, done, info
@@ -79,6 +82,9 @@ class Round2SubmitEnv:
         cm_pos[0] -= pelvis[0]
         cm_pos[2] -= pelvis[0]
         res = res + cm_pos + state_desc["misc"]["mass_center_vel"] + state_desc["misc"]["mass_center_acc"]
+
+        res[-5] = state_desc["target_vel"][0]
+        res[-2] = state_desc["target_vel"][2]
 
         return res
 

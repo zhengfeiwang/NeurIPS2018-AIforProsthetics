@@ -162,17 +162,19 @@ class Runner(AbstractEnvRunner):
                     epinfos.append({'r': infos[i]['episode']['r'], 'l': infos[i]['episode']['l']})
                     self.num_episode += 1
                     summary = tf.Summary()
+                    summary.value.add(tag='episode/length', simple_value=infos[i]['episode']['l'])
                     summary.value.add(tag='episode/original_reward', simple_value=infos[i]['episode']['r'])
                     summary.value.add(tag='episode/shaped_reward', simple_value=infos[i]['episode']['shaped_reward'])
-                    summary.value.add(tag='episode/length', simple_value=infos[i]['episode']['l'])
-                    summary.value.add(tag='episode/pelvis_x', simple_value=infos[i]['episode']['pelvis_x'])
+                    summary.value.add(tag='penalty/activation_penalty', simple_value=infos[i]['episode']['activation_penalty'])
+                    summary.value.add(tag='penalty/vx_penalty', simple_value=infos[i]['episode']['vx_penalty'])
+                    summary.value.add(tag='penalty/vz_penalty', simple_value=infos[i]['episode']['vz_penalty'])
                     self.writer.add_summary(summary, self.num_episode)
 
             # Cask Effect: top self.nenvs - num_casks is ready
             # if all([len(mb_rewards[i]) >= 128 for i in range(self.nenvs)]):
-            if sum([len(mb_rewards[i]) >= 128 for i in range(self.nenvs)]) >= self.valid:
+            if sum([len(mb_rewards[i]) >= self.nsteps for i in range(self.nenvs)]) >= self.valid:
                 for i in range(self.nenvs):
-                    if len(mb_rewards[i]) < 128:
+                    if len(mb_rewards[i]) < self.nsteps:
                         self.casks.add(i)
                 break
 

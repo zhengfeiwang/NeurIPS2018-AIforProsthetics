@@ -30,9 +30,10 @@ def submit(num_timesteps, seed):
                    lr=3e-4,
                    cliprange=0.2,
                    save_interval=10,
-                   load_path="./logs/round1/00036",
+                   load_path="../nips/checkpoints/origin/00000",
                    total_timesteps=num_timesteps
                    )
+
 
 if __name__ == '__main__':
     configure(dir="./logs")
