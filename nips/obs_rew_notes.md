@@ -28,13 +28,13 @@
 ---
 ### Course 3
 ##### observation
-- same to course2
+- based on course2
+- -7: target_vx
+- -8, -9: target_vx diff
 ##### reward
-- positive: `np.exp(-abs(target_vx - current_vx)) + np.exp(-abs(target_vz - current_vz))`
+- positive: 2
 - low pelvis penalty: 0.7, 20
 - activation penalty
-- velocity_x matching penalty with 1x abs()
-- velocity_z matching penalty with 1x abs()
+- velocity_x matching penalty with 3x abs()
+- velocity_z matching penalty with 3x abs()
 - scale = 0.5
-##### Others
-- action repeat: 1 for training

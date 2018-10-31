@@ -20,7 +20,7 @@ class CustomEnv(ProstheticsEnv):
         self.observation_space = Box(low=-10, high=+10, shape=[OBSERVATION_SPACE])
 
     def step(self, action, project=True):
-        obs, r, done, info = super(CustomEnv, self).step(action)
+        obs, r, done, info = super(CustomEnv, self).step(np.clip(action, 0.0, 1.0))
         self.episode_length += 1
 
         # early termination penalty
@@ -114,6 +114,10 @@ class CustomEnv(ProstheticsEnv):
         res[-4] = state_desc["target_vel"][2]
         res[-6] = state_desc["body_vel"]["pelvis"][2] - state_desc["target_vel"][2]
 
+        # add more information about target_vx
+        res[-7] = state_desc["target_vel"][0]
+        res[-8] = res[-9] = state_desc["body_vel"]["pelvis"][0] - state_desc["target_vel"][0]
+
         return res
 
     def reward(self):
@@ -126,9 +130,10 @@ class CustomEnv(ProstheticsEnv):
         current_vx, current_vz = state_desc["body_vel"]["pelvis"][0], state_desc["body_vel"]["pelvis"][2]
         pelvis_y = state_desc["body_pos"]["pelvis"][1]
 
-        reward_x = np.exp(-abs(target_vx - current_vx))
-        reward_z = np.exp(-abs(target_vz - current_vz))
-        reward = reward_x + reward_z
+        # reward_x = np.exp(-abs(target_vx - current_vx))
+        # reward_z = np.exp(-abs(target_vz - current_vz))
+        # reward = reward_x + reward_z
+        reward = 2.0
 
         penalty = 0.0
         # too low pelvis
@@ -137,8 +142,8 @@ class CustomEnv(ProstheticsEnv):
         # activation penalty
         penalty += np.sum(np.array(self.osim_model.get_activations()) ** 2) * 0.001
         # velocity matching penalty on X, Z direction
-        penalty += abs(current_vx - target_vx)
-        penalty += abs(current_vz - target_vz)
+        penalty += abs(current_vx - target_vx) * 3
+        penalty += abs(current_vz - target_vz) * 3
 
         reward -= penalty
 
