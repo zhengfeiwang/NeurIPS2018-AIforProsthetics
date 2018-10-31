@@ -209,6 +209,7 @@ class DiagGaussianPd(Pd):
     def entropy(self):
         return tf.reduce_sum(self.logstd + .5 * np.log(2.0 * np.pi * np.e), axis=-1)
     def sample(self):
+        # if don't need noise, comment the random_normal
         return self.mean + tf.random_normal(tf.shape(self.mean), stddev=self.std)
     @classmethod
     def fromflat(cls, flat):

@@ -159,7 +159,7 @@ class Runner(AbstractEnvRunner):
             # when done, add episodic information to tensorboard
             for i in range(self.nenvs):
                 if self.dones[i] and i in self.good:
-                    epinfos.append({'r': infos[i]['episode']['r'], 'l': infos[i]['episode']['l']})
+                    epinfos.append({'r': infos[i]['episode']['r'], 'l': infos[i]['episode']['l'], 'sr': infos[i]['episode']['shaped_reward']})
                     self.num_episode += 1
                     summary = tf.Summary()
                     summary.value.add(tag='episode/length', simple_value=infos[i]['episode']['l'])
@@ -332,6 +332,7 @@ def learn(*, policy, env, nsteps, total_timesteps, ent_coef, lr,
             logger.logkv("explained_variance", float(ev))
             logger.logkv('eprewmean', safemean([epinfo['r'] for epinfo in epinfobuf]))
             logger.logkv('eplenmean', safemean([epinfo['l'] for epinfo in epinfobuf]))
+            logger.logkv('epsrewmean', safemean([epinfo['sr'] for epinfo in epinfobuf]))
             logger.logkv('time_elapsed', tnow - tfirststart)
             for (lossval, lossname) in zip(lossvals, model.loss_names):
                 logger.logkv(lossname, lossval)
@@ -340,6 +341,7 @@ def learn(*, policy, env, nsteps, total_timesteps, ent_coef, lr,
             summary = tf.Summary()
             summary.value.add(tag='iteration/reward_mean', simple_value=safemean([epinfo['r'] for epinfo in epinfobuf]))
             summary.value.add(tag='iteration/length_mean', simple_value=safemean([epinfo['l'] for epinfo in epinfobuf]))
+            summary.value.add(tag='iteration/shaped_reward_mean', simple_value=safemean([epinfo['sr'] for epinfo in epinfobuf]))
             summary.value.add(tag='iteration/fps', simple_value=fps)
             writer.add_summary(summary, update)
         if save_interval and (update % save_interval == 0 or update == 1) and logger.get_dir():

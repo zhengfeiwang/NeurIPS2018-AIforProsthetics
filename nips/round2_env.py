@@ -7,7 +7,6 @@ OBSERVATION_SPACE = 224
 
 
 class CustomEnv(ProstheticsEnv):
-
     def __init__(self, visualization=True, integrator_accuracy=5e-5):
         # difficulty = 1 for round 2 environment
         super().__init__(visualization, integrator_accuracy, difficulty=1)
@@ -102,9 +101,18 @@ class CustomEnv(ProstheticsEnv):
         cm_pos[0] -= pelvis[0]
         cm_pos[2] -= pelvis[0]
         res = res + cm_pos + state_desc["misc"]["mass_center_vel"] + state_desc["misc"]["mass_center_acc"]
-        # print(state_desc["misc"]["mass_center_vel"], state_desc["misc"]["mass_center_acc"])
+
+        # target vel
         res[-5] = state_desc["target_vel"][0]
         res[-2] = state_desc["target_vel"][2]
+
+        # difference between target_vel and cur_vel
+        res[-3] = state_desc["body_vel"]["pelvis"][0] - state_desc["target_vel"][0]
+        res[-1] = state_desc["body_vel"]["pelvis"][2] - state_desc["target_vel"][2]
+
+        # add more information about target_vz
+        res[-4] = state_desc["target_vel"][2]
+        res[-6] = state_desc["body_vel"]["pelvis"][2] - state_desc["target_vel"][2]
 
         return res
 
@@ -114,17 +122,23 @@ class CustomEnv(ProstheticsEnv):
         if not prev_state_desc:
             return 0
 
-        reward = 2
+        target_vx, target_vz = state_desc["target_vel"][0], state_desc["target_vel"][2]
+        current_vx, current_vz = state_desc["body_vel"]["pelvis"][0], state_desc["body_vel"]["pelvis"][2]
+        pelvis_y = state_desc["body_pos"]["pelvis"][1]
+
+        reward_x = np.exp(-abs(target_vx - current_vx))
+        reward_z = np.exp(-abs(target_vz - current_vz))
+        reward = reward_x + reward_z
 
         penalty = 0.0
         # too low pelvis
-        low_pelvis = max(0, 0.7 - state_desc["body_pos"]["pelvis"][1])
+        low_pelvis = max(0, 0.7 - pelvis_y)
         penalty += low_pelvis * 20
         # activation penalty
         penalty += np.sum(np.array(self.osim_model.get_activations()) ** 2) * 0.001
         # velocity matching penalty on X, Z direction
-        penalty += abs(state_desc["body_vel"]["pelvis"][0] - state_desc["target_vel"][0]) * 2
-        penalty += abs(state_desc["body_vel"]["pelvis"][2] - state_desc["target_vel"][2]) * 2
+        penalty += abs(current_vx - target_vx)
+        penalty += abs(current_vz - target_vz)
 
         reward -= penalty
 
@@ -132,11 +146,14 @@ class CustomEnv(ProstheticsEnv):
 
 
 class CustomActionWrapper(gym.ActionWrapper):
+    def __init__(self, env, action_repeat):
+        super(CustomActionWrapper, self).__init__(env)
+        self.action_repeat = action_repeat
 
     def step(self, action):
         action = self.action(action)
         rew = 0
-        for i in range(2):
+        for i in range(self.action_repeat):
             obs, r, done, info = self.env.step(action)
             rew += r
             if done:

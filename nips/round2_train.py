@@ -14,7 +14,7 @@ from nips.remote_vec_env import RemoteVecEnv
 
 def create_env():
     env = CustomEnv(visualization=args.vis, integrator_accuracy=args.accuracy)
-    env = CustomActionWrapper(env)
+    env = CustomActionWrapper(env, action_repeat=args.repeat)
     return env
 
 
@@ -58,12 +58,14 @@ if __name__ == "__main__":
     parser.add_argument('--vf-coef', default=0.5, type=float, help='value function loss coefficient')
     parser.add_argument('--clip-range', default=0.2, type=float, help='clipping range')
     # env related
-    parser.add_argument('--seed', default=60730, type=int, help='random seed')
+    parser.add_argument('--seed', default=6730, type=int, help='random seed')
     parser.add_argument('--accuracy', default=5e-5, type=float, help='simulator integrator accuracy')
+    parser.add_argument('--repeat', default=1, type=int, help='number of action repeat')
     parser.add_argument('--vis', default=False, action='store_true', help='visualization option')
     # training settings
     parser.add_argument('--num-cpus', default=1, type=int, help='number of cpus')
     parser.add_argument('--num-casks', default=0, type=int, help='number of casks, for acceleration')
+    parser.add_argument('--num-gpus', default=0, type=int, help='number of gpus')
     parser.add_argument('--log-dir', default='./logs', type=str, help='logging events output directory')
     parser.add_argument('--log-interval', default=1, type=int, help='number of timesteps between logging events')
     parser.add_argument('--save-interval', default=1, type=int, help='number of timesteps between saving events')
@@ -71,7 +73,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     print(args)
 
-    ray.init()
+    ray.init(num_cpus=args.num_cpus, num_gpus=args.num_gpus)
     set_global_seeds(args.seed)
     configure(dir=args.log_dir)
     train()
