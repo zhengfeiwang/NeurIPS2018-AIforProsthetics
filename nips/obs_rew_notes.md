@@ -26,7 +26,7 @@
 - velocity_z matching penalty with 3x abs()
 - scale = 0.5
 ---
-### Course 3 (Always Failure)
+### Course 3
 ##### observation
 - based on course2
 - -7: target_vx
