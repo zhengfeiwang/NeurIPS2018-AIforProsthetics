@@ -8,5 +8,4 @@ fi
 NAME=$1
 TAG=$2
 
-docker build --no-cache -t 192.168.1.40:5000/$NAME:$TAG .
-
+docker build --no-cache -t login.local.inspir.ai:5000/$NAME:$TAG .

@@ -20,7 +20,7 @@ class CustomEnv(ProstheticsEnv):
         self.observation_space = Box(low=-10, high=+10, shape=[OBSERVATION_SPACE])
 
     def step(self, action, project=True):
-        obs, r, done, info = super(CustomEnv, self).step(np.clip(action, 0.0, 1.0))
+        obs, r, done, info = super(CustomEnv, self).step(np.clip(np.array(action), 0.0, 1.0))
         self.episode_length += 1
 
         # early termination penalty
@@ -100,23 +100,13 @@ class CustomEnv(ProstheticsEnv):
         cm_pos = state_desc["misc"]["mass_center_pos"]  # relative x / z axis center of mass position
         cm_pos[0] -= pelvis[0]
         cm_pos[2] -= pelvis[0]
-        res = res + cm_pos + state_desc["misc"]["mass_center_vel"] + state_desc["misc"]["mass_center_acc"]
+        res = res + cm_pos
 
-        # target vel
-        res[-5] = state_desc["target_vel"][0]
-        res[-2] = state_desc["target_vel"][2]
-
-        # difference between target_vel and cur_vel
-        res[-3] = state_desc["body_vel"]["pelvis"][0] - state_desc["target_vel"][0]
-        res[-1] = state_desc["body_vel"]["pelvis"][2] - state_desc["target_vel"][2]
-
-        # add more information about target_vz
-        res[-4] = state_desc["target_vel"][2]
-        res[-6] = state_desc["body_vel"]["pelvis"][2] - state_desc["target_vel"][2]
-
-        # add more information about target_vx
-        res[-7] = state_desc["target_vel"][0]
-        res[-8] = res[-9] = state_desc["body_vel"]["pelvis"][0] - state_desc["target_vel"][0]
+        # information about target velocity
+        target_vx, target_vz = state_desc["target_vel"][0], state_desc["target_vel"][2]
+        current_vx, current_vz = state_desc["body_vel"]["pelvis"][0], state_desc["body_vel"]["pelvis"][2]
+        diff_vx, diff_vz = current_vx - target_vx, current_vz - target_vz
+        res = res + [diff_vz, target_vx, diff_vx, diff_vx, target_vz, diff_vz]
 
         return res
 
@@ -130,20 +120,19 @@ class CustomEnv(ProstheticsEnv):
         current_vx, current_vz = state_desc["body_vel"]["pelvis"][0], state_desc["body_vel"]["pelvis"][2]
         pelvis_y = state_desc["body_pos"]["pelvis"][1]
 
-        # reward_x = np.exp(-abs(target_vx - current_vx))
-        # reward_z = np.exp(-abs(target_vz - current_vz))
-        # reward = reward_x + reward_z
-        reward = 2.0
+        reward_x = np.exp(-abs(target_vx - current_vx))
+        reward_z = np.exp(-abs(target_vz - current_vz))
+        reward = reward_x + reward_z
 
         penalty = 0.0
         # too low pelvis
         low_pelvis = max(0, 0.7 - pelvis_y)
         penalty += low_pelvis * 20
         # activation penalty
-        penalty += np.sum(np.array(self.osim_model.get_activations()) ** 2) * 0.001
+        penalty += np.sum(np.array(self.osim_model.get_activations()) ** 2) * 0.001 * 2
         # velocity matching penalty on X, Z direction
-        penalty += abs(current_vx - target_vx) * 3
-        penalty += abs(current_vz - target_vz) * 3
+        penalty += abs(current_vx - target_vx)
+        penalty += abs(current_vz - target_vz)
 
         reward -= penalty
 
