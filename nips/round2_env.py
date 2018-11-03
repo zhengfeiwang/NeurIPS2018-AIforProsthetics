@@ -1,3 +1,4 @@
+import random
 from osim.env import ProstheticsEnv
 import gym
 import numpy as np
@@ -16,8 +17,10 @@ class CustomEnv(ProstheticsEnv):
         self.episode_activation_penalty = 0.0
         self.episode_vx_penalty = 0.0
         self.episode_vz_penalty = 0.0
-
         self.observation_space = Box(low=-10, high=+10, shape=[OBSERVATION_SPACE])
+
+        # random
+        self.random_seed = random.randint(0, 2 ** 32 - 1)
 
     def step(self, action, project=True):
         obs, r, done, info = super(CustomEnv, self).step(np.clip(np.array(action), 0.0, 1.0))
@@ -52,7 +55,9 @@ class CustomEnv(ProstheticsEnv):
         return obs, r, done, info
 
     def reset(self, project=True):
-        super().reset(project=project)
+        super().reset(project=project, seed=self.random_seed)
+        random.seed(self.random_seed)
+        self.random_seed = random.randint(0, 2 ** 32 - 1)
         self.episode_length = 0
         self.episode_original_reward = 0.0
         self.episode_shaped_reward = 0.0
