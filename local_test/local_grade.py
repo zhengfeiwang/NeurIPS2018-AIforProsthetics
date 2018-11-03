@@ -12,7 +12,7 @@ import tensorflow as tf
 def make_local_grade_env():
     random_seeds = [random.randint(0, 2 ** 32 - 1) for _ in range(10)]
     local_env = LocalGradeEnv(random_seeds, visualization=False)
-    repeated_local_env = LocalGradeRepeatActionEnv(env=local_env, repeat=1)
+    repeated_local_env = LocalGradeRepeatActionEnv(env=local_env, repeat=2)
     return repeated_local_env
 
 
@@ -35,6 +35,6 @@ with tf.Session(config=config):
         lr=3e-4,
         cliprange=0.2,
         save_interval=10,
-        load_path="../checkpoints/clip/00162",
+        load_path="../checkpoints/00160",
         total_timesteps=100000
     )
