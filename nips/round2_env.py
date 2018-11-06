@@ -20,6 +20,7 @@ class CustomEnv(ProstheticsEnv):
         self.observation_space = Box(low=-10, high=+10, shape=[OBSERVATION_SPACE])
 
         # random
+        random.seed()
         self.random_seed = random.randint(0, 2 ** 32 - 1)
 
     def step(self, action, project=True):
@@ -134,10 +135,10 @@ class CustomEnv(ProstheticsEnv):
         low_pelvis = max(0, 0.7 - pelvis_y)
         penalty += low_pelvis * 20
         # activation penalty
-        penalty += np.sum(np.array(self.osim_model.get_activations()) ** 2) * 0.001 * 2
+        penalty += np.sum(np.array(self.osim_model.get_activations()) ** 2) * 0.001
         # velocity matching penalty on X, Z direction
-        penalty += abs(current_vx - target_vx)
-        penalty += abs(current_vz - target_vz)
+        penalty += abs(current_vx - target_vx) * 2
+        penalty += abs(current_vz - target_vz) * 2
 
         reward -= penalty
 

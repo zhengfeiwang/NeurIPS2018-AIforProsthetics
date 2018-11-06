@@ -1,6 +1,7 @@
 from baselines.common.vec_env import VecEnvWrapper
 from baselines.common.running_mean_std import RunningMeanStd
 import numpy as np
+import copy
 
 class VecNormalize(VecEnvWrapper):
     """
@@ -33,8 +34,11 @@ class VecNormalize(VecEnvWrapper):
 
     def _obfilt(self, obs):
         if self.ob_rms:
+            tmp = copy.deepcopy(obs)
             self.ob_rms.update(obs)
             obs = np.clip((obs - self.ob_rms.mean) / np.sqrt(self.ob_rms.var + self.epsilon), -self.clipob, self.clipob)
+            for i in range(len(tmp)):
+                obs[i][-6:] = tmp[i][-6:]
             return obs
         else:
             return obs
