@@ -112,6 +112,16 @@ class CustomEnv(ProstheticsEnv):
         target_vx, target_vz = state_desc["target_vel"][0], state_desc["target_vel"][2]
         current_vx, current_vz = state_desc["body_vel"]["pelvis"][0], state_desc["body_vel"]["pelvis"][2]
         diff_vx, diff_vz = current_vx - target_vx, current_vz - target_vz
+        if diff_vx > 0.3:
+            diff_vx, target_vx = 0.3, current_vx - 0.3
+        elif diff_vx < -0.3:
+            diff_vx, target_vx = -0.3, current_vx + 0.3
+
+        if diff_vz > 0.15:
+            diff_vz, target_vz = 0.15, current_vz - 0.15
+        elif diff_vz < -0.15:
+            diff_vz, target_vz = -0.15, current_vz + 0.15
+
         res = res + [diff_vz, target_vx, diff_vx, diff_vx, target_vz, diff_vz]
 
         return res
