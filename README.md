@@ -1,7 +1,7 @@
 # NIPS 2018: AI for Prosthetics Challenge Solution
 
-A solution based on OpenAI baselines ([repo](https://github.com/openai/baselines)) for X-th place 
-(NIPS 2018: AI for Prosthetics Challenge)[https://www.crowdai.org/challenges/nips-2018-ai-for-prosthetics-challenge]
+A solution based on OpenAI baselines ([repo](https://github.com/openai/baselines)) for 10th place @
+[NIPS 2018: AI for Prosthetics Challenge](https://www.crowdai.org/challenges/nips-2018-ai-for-prosthetics-challenge)
 
 ## Table of Contents
 * [Prerequisites](#prerequisites)
