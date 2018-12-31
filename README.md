@@ -1,7 +1,7 @@
-# NIPS 2018: AI for Prosthetics Challenge Solution
+# NeurIPS 2018: AI for Prosthetics Challenge Solution
 
 A solution based on OpenAI baselines ([repo](https://github.com/openai/baselines)) for 9th place 
-[NIPS 2018: AI for Prosthetics Challenge](https://www.crowdai.org/challenges/nips-2018-ai-for-prosthetics-challenge)
+[NeurIPS 2018: AI for Prosthetics Challenge](https://www.crowdai.org/challenges/neurips-2018-ai-for-prosthetics-challenge)
 
 ## Table of Contents
 * [Prerequisites](#prerequisites)
